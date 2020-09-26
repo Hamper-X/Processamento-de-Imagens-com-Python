@@ -4,21 +4,25 @@ INSTRUÇÕES PARA EXECUÇÃO |===================================
     2) Instalar PySimpleGui: pip install --force-reinstall PySimpleGUI
         2.1) Caso não tenha instalado a versão mais recente, dar um pip upgrade
 
-"""
-
-"""
+""""""
 INSTRUÇÕES E DOCUMENTAÇÃO |===================================
     * Values
         -> para pegar o valor do values, basta fazer: values['key']
 """
+
+
+
+
+
+
 
 import PySimpleGUI as sg
 
 sg.theme('Dark Blue 3')  # please make your windows colorful
 layout = [
     [sg.Text('|============| Menu |===========|',size=(30,0))],
-    # FAzer um leitor que permitar pegar apenas imagem
-    [sg.Button('Ler diretorio de imagem',size=(30,0),key="op_diretorio")],
+    # Fazer um leitor que permitar pegar apenas imagem
+    [sg.FileBrowse('Ler diretorio de imagem',size=(30,0),key="op_diretorio")],
     [sg.Button('Selecionar características',size=(30,0),key="op_selecionar")],
     [sg.Button('Treinar classificador',size=(30,0),key="op_treinar")],
     [sg.Button('Abrir Imagem',size=(30,0),key="op_abrirImg")],
@@ -39,10 +43,7 @@ while True:
     #Se a janela for fechada ou o botao EXIT for apertado, ele para o programa.
     if event == sg.WIN_CLOSED or event == 'Exit':
         break
+    imgPath = values['op_diretorio']
 
 
-
-
-
-# MAIN |=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 window.close()
