@@ -1,0 +1,3 @@
+import PySimpleGUI as sg
+
+* sg.FileBrowse() => serve para pegar pegar um repositorio 
