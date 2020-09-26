@@ -3,10 +3,10 @@ import PySimpleGUI as sg
 
 def infoTrab():
     layoutInformacao = [
-        [sg.Text("""Este trabalho mostra  um aplicativo que leia imagens de exames 
-mamográficos e possibilite o reconhecimento automático da densidade da 
-mama,utilizando técnicas de descrição por textura.""")],
-        [sg.Button("Entendido !", key='voltar')]
+        [sg.Text("""Este é um aplicativo que lê imagens de exames 
+mamográficos e possibilita o reconhecimento automático da densidade da 
+mama, utilizando técnicas de descrição por textura.""")],
+        [sg.Button("Voltar", key='voltar')]
     ]
     window = sg.Window('Informações sobre o trabalho', layoutInformacao)
     event, values = window.read()
