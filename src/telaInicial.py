@@ -11,6 +11,7 @@ INSTRUÇÕES E DOCUMENTAÇÃO |===================================
 """
 
 import PySimpleGUI as sg
+import algorithms
 
 sg.theme('Dark Blue 3')  # please make your windows colorful
 
@@ -50,9 +51,15 @@ while True:
     #event é uma ação e values é uma lista de dados
     event, values = window.read()
     
-    #Se a janela for fechada ou o botao EXIT for apertado, ele para o programa.
-    if event == sg.WIN_CLOSED or event == 'Exit':
+    if event == 'op_treinar':
+        algorithms.train()
+    elif event == 'op_calcular':
+        algorithms.calculate()
+    elif event == 'op_classificar':
+        algorithms.classificate()
+    elif event == sg.WIN_CLOSED or event == 'Exit':
         break
+
     imgPath = values['op_diretorio']
 
 
