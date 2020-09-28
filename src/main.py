@@ -1,76 +1,26 @@
+"""
+INSTRUÇÕES PARA EXECUÇÃO |===================================
+    1) Installar python
+    2) Instalar PySimpleGui: pip install --force-reinstall PySimpleGUI
+        2.1) Caso não tenha instalado a versão mais recente, dar um pip upgrade
+
+""""""
+INSTRUÇÕES E DOCUMENTAÇÃO |===================================
+    * Values
+        -> para pegar o valor do values, basta fazer: values['key']
+"""
+
 import PySimpleGUI as sg
+import interfaceOptions
 
-
-def infoTrab():
-    layoutInformacao = [
-        [sg.Text("""Este é um aplicativo que lê imagens de exames 
-mamográficos e possibilita o reconhecimento automático da densidade da 
-mama, utilizando técnicas de descrição por textura.""")],
-        [sg.Button("Voltar", key='voltar')]
-    ]
-    window = sg.Window('Informações sobre o trabalho', layoutInformacao)
-    event, values = window.read()
-    if event == 'voltar':
-        window.close()
-
-def helpTrab():
-    layoutHelp = [
-        [sg.Text(""" 
-• Para ler e visualizar imagens use os formatos PNG, TIFF e DICOM. As imagens podem ter
-qualquer resolução e número de tons de cinza.
-• Após selecionar a imagem que quer avaliar, você sera redirecionado para a aba principal.
-• Você tem a opção de selecionar com o mouse uma região de interesse de 128 x 128 pixels 
-a ser reconhecida. Apos selecionar, um contorno de cor verde aparecera em torno da area.
-• Você tem a opção de ler um diretório contendo 4 subdiretórios com os arquivos de imagens
-previamente
-recortadas, associadas às 4 classes BIRADS. Os nomes dos subdiretórios são 1,2,3 e essas imagens 
-servirão para treinar e testar o classificador.
-• Todas essas opções estarão disponiveis no menu principal, apos a seleção da imagem pelo diretorio.
-        """)],
-        [sg.Button("Entendido !", key='voltar')]
-    ]
-    window = sg.Window('Informações sobre o trabalho', layoutHelp)
-    event, values = window.read()
-    if event == 'voltar':
-        window.close()
-
-
-def start():
-    imgPath = None
-    sg.theme('Dark Blue 3')  # please make your creations colorful
-    layoutInicial = [
-        [sg.Text('Escolha o diretorio da imagem e depois clique em avançar para iniciar.', size=(62, 0))],
-        [sg.InputText(size=(52,0)),
-            sg.FileBrowse('Buscar', key="op_diretorio"),
-            sg.Button("Avançar",key='next')],
-        [sg.Button("Sobre o trabalho", size=(30, 0), key='sobre'),
-        sg.Button("Como funciona?", size=(30, 0), key = 'tutorial')],
-        [sg.Exit()]
-    ]
-
-    window = sg.Window('Teste 02', layoutInicial)
-    while True:
-        event, values = window.read()
-        # Se a janela for fechada ou o botao EXIT for apertado, ele para o programa.
-        if event == sg.WIN_CLOSED or event == 'Exit':
-            break
-        if event == 'sobre':
-            infoTrab()
-        if event == 'tutorial':
-            helpTrab()
-        if event == 'op_diretorio':
-            imgPath = values['op_diretorio']
-        if event == 'next':
-            break
-    window.close()
-    return imgPath
     
 
 # MAIN |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def main():
-    start()
-
-
+    interfaceOptions.start()
+    interfaceOptions.telaInicial()
+    
+    
 
 
 
