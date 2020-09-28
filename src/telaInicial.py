@@ -10,31 +10,41 @@ INSTRUÇÕES E DOCUMENTAÇÃO |===================================
         -> para pegar o valor do values, basta fazer: values['key']
 """
 
-
-
-
-
-
-
 import PySimpleGUI as sg
 
 sg.theme('Dark Blue 3')  # please make your windows colorful
-layout = [
-    [sg.Text('|============| Menu |===========|',size=(30,0))],
+
+image_col_layout = [
+    [sg.Text('Imagem',pad=((220, 150),(20,20)))],
+    [sg.Image(size=(500,500), background_color='white')]
+]
+
+image_col = sg.Column(image_col_layout, element_justification='left')
+
+elements_col_size=(50,0)
+zoom_buttons_size=(24,0)
+
+elements_col_layout = [
+    [sg.Text('| Menu |', size=elements_col_size)],
     # Fazer um leitor que permitar pegar apenas imagem
-    [sg.FileBrowse('Ler diretorio de imagem',size=(30,0),key="op_diretorio")],
-    [sg.Button('Selecionar características',size=(30,0),key="op_selecionar")],
-    [sg.Button('Treinar classificador',size=(30,0),key="op_treinar")],
-    [sg.Button('Abrir Imagem',size=(30,0),key="op_abrirImg")],
-    [sg.Button('Marcar região de interesse',size=(30,0),key="op_marcar")],
-    [sg.Button('Calcular e exibir características',size=(30,0),key="op_calcular")],
-    [sg.Button('Classificar imagem/regiao',size=(30,0),key="op_classificar")],
-    [sg.Button('zoom in',size=(14,0),key="op_zoomO"),sg.Button('zoom out',size=(14,0),key="op_zoomI")],
-    [sg.Output(size=(32,10))],
+    [sg.FileBrowse('Ler diretorio de imagem', size=elements_col_size, key="op_diretorio")],
+    [sg.Button('Selecionar características', size=elements_col_size, key="op_selecionar")],
+    [sg.Button('Treinar classificador', size=elements_col_size, key="op_treinar")],
+    [sg.Button('Abrir Imagem', size=elements_col_size, key="op_abrirImg")],
+    [sg.Button('Marcar região de interesse', size=elements_col_size, key="op_marcar")],
+    [sg.Button('Calcular e exibir características', size=elements_col_size, key="op_calcular")],
+    [sg.Button('Classificar imagem/regiao', size=elements_col_size, key="op_classificar")],
+    [sg.Button('zoom in', size=zoom_buttons_size, key="op_zoomO"),sg.Button('zoom out', size=zoom_buttons_size, key="op_zoomI")],
     [sg.Exit()]
 ]
 
-window = sg.Window('Teste 01', layout)
+elements_col = sg.Column(elements_col_layout, element_justification='right')
+
+layout = [
+    [image_col,elements_col]
+]
+
+window = sg.Window('BIRADS', layout)
 
 while True:
     #event é uma ação e values é uma lista de dados
