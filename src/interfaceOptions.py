@@ -47,12 +47,15 @@ def start():
         # Se a janela for fechada ou o botao EXIT for apertado, ele para o programa.
         if event == sg.WIN_CLOSED or event == 'Exit':
             break
+            return False
         if event == 'sobre':
             infoTrab()
         if event == 'tutorial':
             helpTrab()
         if event == 'start':
+            return True
             break
+            
             #Abrir janela principal
     window.close()
 
@@ -62,7 +65,7 @@ def telaInicial():
 
     image_col_layout = [
         [sg.Text('Imagem',pad=((220, 150),(20,20)))],
-        [sg.Image(size=(500,500), background_color='white')]
+        [sg.Image(size=(500,500), background_color='white',key='image')]
     ]
 
     image_col = sg.Column(image_col_layout, element_justification='left')
@@ -107,6 +110,10 @@ def telaInicial():
             break
 
         imgPath = values['op_diretorio']
+        if imgPath != "":
+            window['image'].update()
+        else:
+            print("ERRO! A Imagem ou diretorio especificado não foi encontrado ou não pode ser reproduzido.")
     window.close()
 
 

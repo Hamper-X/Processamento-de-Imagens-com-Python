@@ -1,3 +1,5 @@
+import cv2
+
 def train():
     print('Algoritmo para treinar o classificador')
 
@@ -6,3 +8,4 @@ def calculate():
 
 def classificate():
     print('Algoritmo para classificar imagem/região')
+
