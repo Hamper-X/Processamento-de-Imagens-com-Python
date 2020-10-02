@@ -1,5 +1,3 @@
-import cv2
-
 def train():
     print('Algoritmo para treinar o classificador')
 
