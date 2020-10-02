@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import algorithms
-from PIL import Image, ImageFilter
-import os
+import tkinter as tk
+import PIL.ImageTk
 
 
 def infoTrab():
@@ -60,8 +60,8 @@ def start():
         if event == 'tutorial':
             helpTrab()
         if event == 'start':
-            return True
-            window.close()        
+            window.close()
+            return True        
             break
 
             # Abrir janela principal
@@ -73,7 +73,7 @@ def telaInicial():
 
     image_col_layout = [
         [sg.Text('Imagem', pad=((220, 150), (20, 20)))],
-        [sg.Image(size=(500, 500), background_color='white', key='-image-')]
+        [sg.Image(size=(500, 500), key='-image-')]
     ]
 
     image_col = sg.Column(image_col_layout, element_justification='left')
@@ -124,5 +124,12 @@ def telaInicial():
             algorithms.classificate()
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break
-        elif event == 'op_diretorio':
-            window['-imagem-'].update(values['op_diretorio'])
+        
+        if event == 'op_diretorio':
+            
+            imgPath = values['op_diretorio']
+            print(imgPath)
+            root = tk.Tk()
+            img = ImageTk.PhotoImage(ImageTk.open(imgPath))
+            window['-imagem-'].update(img)
+            
