@@ -5,6 +5,8 @@ INSTRUÇÕES PARA EXECUÇÃO |===================================
         2.1) Caso não tenha instalado a versão mais recente, dar um pip upgrade
     3) Instalar opencv-pythob: pip install opencv-python
         3.1) Caso a auto instalação instale a versão menos atualizada, basta usar o pip install --upgrade pip 
+    4) Instalar Pillow: pip install Pillow
+
 """"""
 INSTRUÇÕES E DOCUMENTAÇÃO |===================================
     * Values
