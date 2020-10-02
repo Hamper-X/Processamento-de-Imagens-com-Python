@@ -73,7 +73,7 @@ def telaInicial():
 
     image_col_layout = [
         [sg.Text('Imagem', pad=((220, 150), (20, 20)))],
-        [sg.Image(size=(500, 500), key='-image-')]
+        [sg.Image(r'C:\Users\david\Documents\PUC\2° Semestre\PI\Trabalho Fudido\imagens\1\p_d_left_cc(108).png',size=(500, 500), key='-image-')]
     ]
 
     image_col = sg.Column(image_col_layout, element_justification='left')
