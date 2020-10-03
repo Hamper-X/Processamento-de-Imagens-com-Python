@@ -1,4 +1,6 @@
 import PySimpleGUI as sg
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 import explanation
 import algorithms
@@ -62,5 +64,7 @@ def telaInicial():
             break
         elif event == '_op_diretorio':
             imgPath = values['_op_diretorio']
-            window['_image'].update(filename=imgPath)
+            img = mpimg.imread(imgPath)
+            plt.imshow(img)
+            plt.show()
             
