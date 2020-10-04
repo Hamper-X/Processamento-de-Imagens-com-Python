@@ -1,10 +1,10 @@
 import PySimpleGUI as sg
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 
 import explanation
 import algorithms
 import configs
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 def telaInicial():
     sg.theme(configs.theme)  # please make your windows colorful
@@ -22,18 +22,19 @@ def telaInicial():
     elements_col_layout = [
         [sg.Text('| Menu |', size=elements_col_size)],
         # Fazer um leitor que permitar pegar apenas imagem
-        [sg.FileBrowse('Ler diretorio de imagem',
-                       size=elements_col_size, key="_op_diretorio", enable_events=True)],
+        [sg.FileBrowse('Abrir e vizualizar uma imagem',
+                       size=elements_col_size, key="_op_diretorio", enable_events=True)],       #Funcionando OK
+        [sg.FolderBrowse('Ler diretorio para treino e teste',
+                   size=elements_col_size, key="_op_selecionar", enable_events=True)],                              #David esta alterando
+        [sg.Button('Treinar classificador',
+                   size=elements_col_size, key="_op_treinar", enable_events=True)],
         [sg.Button('Selecionar características',
                    size=elements_col_size, key="_op_selecionar")],
-        [sg.Button('Treinar classificador',
-                   size=elements_col_size, key="_op_treinar")],
-        [sg.Button('Abrir Imagem', size=elements_col_size, key="op_abrirImg")],
         [sg.Button('Marcar região de interesse',
                    size=elements_col_size, key="_op_marcar")],
         [sg.Button('Calcular e exibir características',
                    size=elements_col_size, key="_op_calcular")],
-        [sg.Button('Classificar imagem/regiao',
+        [sg.Button('Classificar imagem/regiao selecionada',
                    size=elements_col_size, key="_op_classificar")],
         [sg.Button('zoom in', size=zoom_buttons_size, key="op_zoomO"), sg.Button(
             'zoom out', size=zoom_buttons_size, key="op_zoomI")],
@@ -53,6 +54,7 @@ def telaInicial():
     while True:
         # event é uma ação e values é uma lista de dados
         event, values = window.read()
+        folder="VAZIO"
 
         if event == '_op_treinar':
             algorithms.train()
@@ -67,4 +69,14 @@ def telaInicial():
             img = mpimg.imread(imgPath)
             plt.imshow(img)
             plt.show()
+        elif event == '_op_selecionar':
+            folder = values['_op_selecionar']   #Pegar diretorio das pastas 
+        elif event == '_op_treinar' and folder != "":
+            algorithms.train(folder)
+        elif event == 'op_zoomI':
+            print('+ zoom')
+        elif event == 'op_zoomO':
+            print('- zoom')     
+            
+
             
