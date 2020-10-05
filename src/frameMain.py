@@ -9,12 +9,12 @@ import matplotlib.image as mpimg
 def telaInicial():
     sg.theme(configs.theme)  # please make your windows colorful
 
-    image_col_layout = [
+    '''image_col_layout = [
         [sg.Text('Imagem', pad=((220, 150), (20, 20)))],
         [sg.Image(size=(500, 500), key='_image')]
-    ]
+    ]'''
 
-    image_col = sg.Column(image_col_layout, element_justification='left')
+    #image_col = sg.Column(image_col_layout, element_justification='left')
 
     elements_col_size = (50, 0)
     zoom_buttons_size = (24, 0)
@@ -38,27 +38,26 @@ def telaInicial():
                    size=elements_col_size, key="_op_classificar")],
         [sg.Button('zoom in', size=zoom_buttons_size, key="op_zoomO"), sg.Button(
             'zoom out', size=zoom_buttons_size, key="op_zoomI")],
-        [sg.Output(size=(55, 12))],
+        #[sg.Output(size=(55, 12))],
         [sg.Exit()]
     ]
 
+    '''
     elements_col = sg.Column(
         elements_col_layout, element_justification='right')
 
     layout = [
         [image_col, elements_col]
-    ]
+    ]'''
 
-    window = sg.Window(configs.projectName, layout)
+    window = sg.Window(configs.projectName, elements_col_layout)
 
+    folder="VAZIO"
     while True:
         # event é uma ação e values é uma lista de dados
         event, values = window.read()
-        folder="VAZIO"
 
-        if event == '_op_treinar':
-            algorithms.train()
-        elif event == '_op_calcular':
+        if event == '_op_calcular':
             algorithms.calculate()
         elif event == '_op_classificar':
             algorithms.classificate()
