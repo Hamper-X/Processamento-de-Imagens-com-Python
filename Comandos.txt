@@ -1,3 +1,4 @@
 import PySimpleGUI as sg
-
-* sg.FileBrowse() => serve para pegar pegar um repositorio 
+python -m pip install -U matplotlib
+pip install pydicom
+pip install opencv-python

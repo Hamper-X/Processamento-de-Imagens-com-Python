@@ -3,13 +3,16 @@ import PySimpleGUI as sg
 import explanation
 import algorithms
 import configs
+import opencv
 
-def telaInicial():
+imgPath = ''
+
+def telaInicial(filepath=''):
     sg.theme(configs.theme)  # please make your windows colorful
 
     image_col_layout = [
         [sg.Text('Imagem', pad=((220, 150), (20, 20)))],
-        [sg.Image(size=(500, 500), key='_image')]
+        [sg.Image(size=(500, 500), key='_image', filename=filepath)]
     ]
 
     image_col = sg.Column(image_col_layout, element_justification='left')
@@ -22,20 +25,20 @@ def telaInicial():
         # Fazer um leitor que permitar pegar apenas imagem
         [sg.FileBrowse('Ler diretorio de imagem',
                        size=elements_col_size, key="_op_diretorio", enable_events=True)],
+        [sg.Button('Marcar região de interesse',
+                   size=elements_col_size, key="_op_marcar_regiao")],
         [sg.Button('Selecionar características',
                    size=elements_col_size, key="_op_selecionar")],
         [sg.Button('Treinar classificador',
                    size=elements_col_size, key="_op_treinar")],
         [sg.Button('Abrir Imagem', size=elements_col_size, key="op_abrirImg")],
-        [sg.Button('Marcar região de interesse',
-                   size=elements_col_size, key="_op_marcar")],
         [sg.Button('Calcular e exibir características',
                    size=elements_col_size, key="_op_calcular")],
         [sg.Button('Classificar imagem/regiao',
                    size=elements_col_size, key="_op_classificar")],
         [sg.Button('zoom in', size=zoom_buttons_size, key="op_zoomO"), sg.Button(
             'zoom out', size=zoom_buttons_size, key="op_zoomI")],
-        [sg.Output(size=(55, 12))],
+        #[sg.Output(size=(55, 12))],
         [sg.Exit()]
     ]
 
@@ -47,11 +50,12 @@ def telaInicial():
     ]
 
     window = sg.Window(configs.projectName, layout)
-
-    while True:
+    #window['_image'].update(filename=filepath)
+    #event, values = window.read()
+    while (True):
         # event é uma ação e values é uma lista de dados
         event, values = window.read()
-
+        print('dsad')
         if event == '_op_treinar':
             algorithms.train()
         elif event == '_op_calcular':
@@ -63,4 +67,9 @@ def telaInicial():
         elif event == '_op_diretorio':
             imgPath = values['_op_diretorio']
             window['_image'].update(filename=imgPath)
+            #window.UnHide()
+        elif event == '_op_marcar_regiao':
+            window.Close()
+            opencv.openImage(imgPath)
+            
             
