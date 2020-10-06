@@ -55,21 +55,17 @@ def telaInicial():
 
     window = sg.Window(configs.projectName, layout)
 
+    folder="VAZIO"
     while (True):
         # event é uma ação e values é uma lista de dados
         event, values = window.read()
         print('dsad')
-        if event == '_op_treinar':
-            updateButton(window, event)
-            opencv.salvar_imagem()
-            algorithms.train()
-        elif event == '_op_calcular':
+        if event == '_op_calcular':
             updateButton(window, event)
             algorithms.calculate()
         elif event == '_op_classificar':
             updateButton(window, event)
             algorithms.classificate()
-            print(opencv.window_name)
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break
         elif event == '_op_diretorio':
