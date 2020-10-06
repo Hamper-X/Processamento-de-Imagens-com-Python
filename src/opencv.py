@@ -40,7 +40,7 @@ def abrir_imagem(imagePath):
         sys.exit("Could not read the image.")
     
     #opencv_utils.openWindow(window_name, img)
-    cv.namedWindow(window_name)
+    cv.namedWindow(window_name, cv.WINDOW_NORMAL)
     cv.imshow(window_name,img)
 
     cv.setMouseCallback(window_name,draw_rectangule,param=imgPath)
@@ -48,6 +48,7 @@ def abrir_imagem(imagePath):
     frameMain.telaInicial()
 
 def marcar_regiao():
+    print('teste')
     opencv_utils.openWindow(window_name, img)
 
     cv.setMouseCallback(window_name,draw_rectangule,param=imgPath)
@@ -64,5 +65,6 @@ def marcar_regiao():
                 cv.destroyWindow(window_name)
 
 def salvar_imagem():
+    print('teste')
     #converter para png
     cv.imwrite("../images/processing.png", img)
