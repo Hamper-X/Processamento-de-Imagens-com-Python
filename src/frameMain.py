@@ -37,7 +37,7 @@ def telaInicial():
 
         [sg.FileBrowse('Ler diretorio de imagem', size=elements_col_size, key="_op_diretorio", enable_events=True, button_color=parameters.color_button_notselected)],
         [initializeButton('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao")],
-        [sg.FolderBrowse('Selecionar características', size=elements_col_size, key="_op_selecionar")],
+        [sg.FolderBrowse('Selecionar características', size=elements_col_size, key="_op_selecionar", enable_events = True)],
         [initializeButton('Treinar classificador', size=elements_col_size, key="_op_treinar")],
         [initializeButton('Abrir Imagem', size=elements_col_size, key="op_abrirImg")],
         [initializeButton('Calcular e exibir características', size=elements_col_size, key="_op_calcular")],
@@ -54,7 +54,7 @@ def telaInicial():
 
     window = sg.Window(configs.projectName, layout)
 
-    folder=parameters.train_folder
+    folder="vazio"
     while (True):
         # event é uma ação e values é uma lista de dados
         event, values = window.read()
