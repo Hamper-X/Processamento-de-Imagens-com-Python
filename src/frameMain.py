@@ -3,71 +3,95 @@ import PySimpleGUI as sg
 import explanation
 import algorithms
 import configs
+
+import opencv
+import control
+import parameters
+
+elements_col_size = (50, 0)
+zoom_buttons_size = (24, 0)
+
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 def telaInicial():
     sg.theme(configs.theme)  # please make your windows colorful
 
-    '''image_col_layout = [
-        [sg.Text('Imagem', pad=((220, 150), (20, 20)))],
-        [sg.Image(size=(500, 500), key='_image')]
-    ]'''
 
-    #image_col = sg.Column(image_col_layout, element_justification='left')
+def updateButton(window, event):
+    if control.button_selected == True:
+        control.button_selected = False
+        window[event].update(button_color=parameters.color_button_notselected)
+    else:
+        control.button_selected = True
+        window[event].update(button_color=parameters.color_button_selected)
 
-    elements_col_size = (50, 0)
-    zoom_buttons_size = (24, 0)
-
-    elements_col_layout = [
+def initializeButton(label, size, key):
+    return sg.Button(label, size=size, key=key, button_color=parameters.color_button_notselected)
+    
+def telaInicial():
+    sg.theme(configs.theme)  # please make your windows colorful
+    
+    layout = [
         [sg.Text('| Menu |', size=elements_col_size)],
         # Fazer um leitor que permitar pegar apenas imagem
-        [sg.FileBrowse('Abrir e vizualizar uma imagem',
-                       size=elements_col_size, key="_op_diretorio", enable_events=True)],       #Funcionando OK
-        [sg.FolderBrowse('Ler diretorio para treino e teste',
-                   size=elements_col_size, key="_op_selecionar", enable_events=True)],                              #David esta alterando
-        [sg.Button('Treinar classificador',
-                   size=elements_col_size, key="_op_treinar", enable_events=True)],
-        [sg.Button('Selecionar características',
-                   size=elements_col_size, key="_op_selecionar")],
-        [sg.Button('Marcar região de interesse',
-                   size=elements_col_size, key="_op_marcar")],
-        [sg.Button('Calcular e exibir características',
-                   size=elements_col_size, key="_op_calcular")],
-        [sg.Button('Classificar imagem/regiao selecionada',
-                   size=elements_col_size, key="_op_classificar")],
-        [sg.Button('zoom in', size=zoom_buttons_size, key="op_zoomO"), sg.Button(
-            'zoom out', size=zoom_buttons_size, key="op_zoomI")],
+
+        [sg.FileBrowse('Ler diretorio de imagem', size=elements_col_size, key="_op_diretorio", enable_events=True, button_color=parameters.color_button_notselected)],
+        [initializeButton('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao")],
+        [initializeButton('Selecionar características', size=elements_col_size, key="_op_selecionar")],
+        [initializeButton('Treinar classificador', size=elements_col_size, key="_op_treinar")],
+        [initializeButton('Abrir Imagem', size=elements_col_size, key="op_abrirImg")],
+        [initializeButton('Calcular e exibir características', size=elements_col_size, key="_op_calcular")],
+        [initializeButton('Classificar imagem/regiao', size=elements_col_size, key="_op_classificar")],
+        [
+            initializeButton('zoom in', size=zoom_buttons_size, key="op_zoomO"), 
+            initializeButton('zoom out', size=zoom_buttons_size, key="op_zoomI")
+        ],
+
         #[sg.Output(size=(55, 12))],
         [sg.Exit()]
     ]
 
-    '''
-    elements_col = sg.Column(
-        elements_col_layout, element_justification='right')
 
-    layout = [
-        [image_col, elements_col]
-    ]'''
+    window = sg.Window(configs.projectName, layout)
 
-    window = sg.Window(configs.projectName, elements_col_layout)
-
-    folder="VAZIO"
-    while True:
+    while (True):
         # event é uma ação e values é uma lista de dados
         event, values = window.read()
-
-        if event == '_op_calcular':
+        print('dsad')
+        if event == '_op_treinar':
+            updateButton(window, event)
+            opencv.salvar_imagem()
+            algorithms.train()
+        elif event == '_op_calcular':
+            updateButton(window, event)
             algorithms.calculate()
         elif event == '_op_classificar':
+            updateButton(window, event)
             algorithms.classificate()
+            print(opencv.window_name)
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break
         elif event == '_op_diretorio':
-            imgPath = values['_op_diretorio']
-            img = mpimg.imread(imgPath)
-            plt.imshow(img)
-            plt.show()
+            #imgPath = values['_op_diretorio']
+            #img = mpimg.imread(imgPath)
+            #plt.imshow(img)
+            #plt.show()
+            updateButton(window, event)
+            imgPath = values[event]
+            window.Close()
+
+            opencv.abrir_imagem(imgPath)
+        elif event == '_op_marcar_regiao':
+            if control.mark_image_rectangle == True:
+                control.mark_image_rectangle = False
+                window[event].update(button_color=parameters.color_button_notselected)
+            else:
+                control.mark_image_rectangle = True
+                window[event].update(button_color=parameters.color_button_selected)
+            
+            window.Close()
+            opencv.marcar_regiao()
         elif event == '_op_selecionar':
             folder = values['_op_selecionar']   #Pegar diretorio das pastas 
         elif event == '_op_treinar' and folder != "":
@@ -76,6 +100,3 @@ def telaInicial():
             print('+ zoom')
         elif event == 'op_zoomO':
             print('- zoom')     
-            
-
-            
