@@ -3,14 +3,20 @@ import PySimpleGUI as sg
 import explanation
 import algorithms
 import configs
+
 import opencv
 import control
 import parameters
 
-imgPath = ''
-
 elements_col_size = (50, 0)
 zoom_buttons_size = (24, 0)
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
+def telaInicial():
+    sg.theme(configs.theme)  # please make your windows colorful
+
 
 def updateButton(window, event):
     if control.button_selected == True:
@@ -29,6 +35,7 @@ def telaInicial():
     layout = [
         [sg.Text('| Menu |', size=elements_col_size)],
         # Fazer um leitor que permitar pegar apenas imagem
+
         [sg.FileBrowse('Ler diretorio de imagem', size=elements_col_size, key="_op_diretorio", enable_events=True, button_color=parameters.color_button_notselected)],
         [initializeButton('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao")],
         [initializeButton('Selecionar características', size=elements_col_size, key="_op_selecionar")],
@@ -40,9 +47,11 @@ def telaInicial():
             initializeButton('zoom in', size=zoom_buttons_size, key="op_zoomO"), 
             initializeButton('zoom out', size=zoom_buttons_size, key="op_zoomI")
         ],
+
         #[sg.Output(size=(55, 12))],
         [sg.Exit()]
     ]
+
 
     window = sg.Window(configs.projectName, layout)
 
@@ -64,6 +73,10 @@ def telaInicial():
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break
         elif event == '_op_diretorio':
+            #imgPath = values['_op_diretorio']
+            #img = mpimg.imread(imgPath)
+            #plt.imshow(img)
+            #plt.show()
             updateButton(window, event)
             imgPath = values[event]
             window.Close()
@@ -79,5 +92,11 @@ def telaInicial():
             
             window.Close()
             opencv.marcar_regiao()
-            
-            
+        elif event == '_op_selecionar':
+            folder = values['_op_selecionar']   #Pegar diretorio das pastas 
+        elif event == '_op_treinar' and folder != "":
+            algorithms.train(folder)
+        elif event == 'op_zoomI':
+            print('+ zoom')
+        elif event == 'op_zoomO':
+            print('- zoom')     

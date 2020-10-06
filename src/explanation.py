@@ -5,7 +5,7 @@ def infoTrab():
         [sg.Text("""Este é um aplicativo que lê imagens de exames 
 mamográficos e possibilita o reconhecimento automático da densidade da 
 mama, utilizando técnicas de descrição por textura.""")],
-        [sg.Button("_voltar", key='_voltar')]
+        [sg.Button("Entendido !", key='_voltar')]
     ]
     
     window = sg.Window('Informações sobre o trabalho', layoutInformacao)
