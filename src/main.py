@@ -1,3 +1,4 @@
+#coding=utf-8
 """
 INSTRUÇÕES PARA EXECUÇÃO |===================================
     1) Installar python
