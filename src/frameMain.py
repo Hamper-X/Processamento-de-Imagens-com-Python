@@ -86,8 +86,6 @@ def telaInicial():
                 control.mark_image_rectangle = True
                 window[event].update(button_color=parameters.color_button_selected)
             
-            #window.Close()
-            opencv.marcar_regiao()
         elif event == '_op_selecionar':
             folder = values[event]   #Pegar diretorio das pastas 
         elif event == '_op_treinar' and folder != "":

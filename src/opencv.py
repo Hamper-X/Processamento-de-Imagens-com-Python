@@ -16,16 +16,17 @@ global img
 
 # Callback functions
 def draw_rectangule(event,x,y,flags,param):
+    #todo: tratar se a imagem está carregada
     if event == cv.EVENT_LBUTTONDOWN and control.mark_image_rectangle :
         print(param)
         global img
         print('x: ' + str(x))
         print('y: ' + str(y))
-        #img = cv.imread(param)
+        
         img = opencv_utils.imageRead(param)
         
         cv.rectangle(img, (x-offset,y-offset), (x+offset,y+offset), parameters.color_green, 2, cv.LINE_4)
-        #cv.imshow(window_name,img)
+        
         opencv_utils.imageShow(window_name, img)
 
 #Core functions
@@ -41,30 +42,6 @@ def abrir_imagem(imagePath):
     opencv_utils.openWindow(window_name, img)
 
     cv.setMouseCallback(window_name,draw_rectangule,param=imgPath)
-    
-    #frameMain.telaInicial()
-
-def marcar_regiao():
-    print('teste')
-    opencv_utils.openWindow(window_name, img)
-
-    cv.setMouseCallback(window_name,draw_rectangule,param=imgPath)
-
-    #frameMain.telaInicial()
-    
-    if control.mark_image_rectangle :
-        while(1):
-            k = cv.waitKey(1) & 0xFF
-            
-            if k & 0xFF == 27:
-                break
-            if k == ord('q'):
-                print('saiii')
-                break
-                #salvar_imagem()
-                #cv.destroyAllWindows()
-
-    cv.destroyAllWindows()            
 
 def salvar_imagem():
     print('teste')
