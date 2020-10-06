@@ -4,72 +4,80 @@ import explanation
 import algorithms
 import configs
 import opencv
+import control
+import parameters
 
 imgPath = ''
 
-def telaInicial(filepath=''):
+elements_col_size = (50, 0)
+zoom_buttons_size = (24, 0)
+
+def updateButton(window, event):
+    if control.button_selected == True:
+        control.button_selected = False
+        window[event].update(button_color=parameters.color_button_notselected)
+    else:
+        control.button_selected = True
+        window[event].update(button_color=parameters.color_button_selected)
+
+def initializeButton(label, size, key):
+    return sg.Button(label, size=size, key=key, button_color=parameters.color_button_notselected)
+    
+def telaInicial():
     sg.theme(configs.theme)  # please make your windows colorful
-
-    image_col_layout = [
-        [sg.Text('Imagem', pad=((220, 150), (20, 20)))],
-        [sg.Image(size=(500, 500), key='_image', filename=filepath)]
-    ]
-
-    image_col = sg.Column(image_col_layout, element_justification='left')
-
-    elements_col_size = (50, 0)
-    zoom_buttons_size = (24, 0)
-
-    elements_col_layout = [
+    
+    layout = [
         [sg.Text('| Menu |', size=elements_col_size)],
         # Fazer um leitor que permitar pegar apenas imagem
-        [sg.FileBrowse('Ler diretorio de imagem',
-                       size=elements_col_size, key="_op_diretorio", enable_events=True)],
-        [sg.Button('Marcar região de interesse',
-                   size=elements_col_size, key="_op_marcar_regiao")],
-        [sg.Button('Selecionar características',
-                   size=elements_col_size, key="_op_selecionar")],
-        [sg.Button('Treinar classificador',
-                   size=elements_col_size, key="_op_treinar")],
-        [sg.Button('Abrir Imagem', size=elements_col_size, key="op_abrirImg")],
-        [sg.Button('Calcular e exibir características',
-                   size=elements_col_size, key="_op_calcular")],
-        [sg.Button('Classificar imagem/regiao',
-                   size=elements_col_size, key="_op_classificar")],
-        [sg.Button('zoom in', size=zoom_buttons_size, key="op_zoomO"), sg.Button(
-            'zoom out', size=zoom_buttons_size, key="op_zoomI")],
+        [sg.FileBrowse('Ler diretorio de imagem', size=elements_col_size, key="_op_diretorio", enable_events=True, button_color=parameters.color_button_notselected)],
+        [initializeButton('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao")],
+        [initializeButton('Selecionar características', size=elements_col_size, key="_op_selecionar")],
+        [initializeButton('Treinar classificador', size=elements_col_size, key="_op_treinar")],
+        [initializeButton('Abrir Imagem', size=elements_col_size, key="op_abrirImg")],
+        [initializeButton('Calcular e exibir características', size=elements_col_size, key="_op_calcular")],
+        [initializeButton('Classificar imagem/regiao', size=elements_col_size, key="_op_classificar")],
+        [
+            initializeButton('zoom in', size=zoom_buttons_size, key="op_zoomO"), 
+            initializeButton('zoom out', size=zoom_buttons_size, key="op_zoomI")
+        ],
         #[sg.Output(size=(55, 12))],
         [sg.Exit()]
     ]
 
-    elements_col = sg.Column(
-        elements_col_layout, element_justification='right')
-
-    layout = [
-        [image_col, elements_col]
-    ]
-
     window = sg.Window(configs.projectName, layout)
-    #window['_image'].update(filename=filepath)
-    #event, values = window.read()
+
     while (True):
         # event é uma ação e values é uma lista de dados
         event, values = window.read()
         print('dsad')
         if event == '_op_treinar':
+            updateButton(window, event)
+            opencv.salvar_imagem()
             algorithms.train()
         elif event == '_op_calcular':
+            updateButton(window, event)
             algorithms.calculate()
         elif event == '_op_classificar':
+            updateButton(window, event)
             algorithms.classificate()
+            print(opencv.window_name)
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break
         elif event == '_op_diretorio':
-            imgPath = values['_op_diretorio']
-            window['_image'].update(filename=imgPath)
-            #window.UnHide()
-        elif event == '_op_marcar_regiao':
+            updateButton(window, event)
+            imgPath = values[event]
             window.Close()
-            opencv.openImage(imgPath)
+
+            opencv.abrir_imagem(imgPath)
+        elif event == '_op_marcar_regiao':
+            if control.mark_image_rectangle == True:
+                control.mark_image_rectangle = False
+                window[event].update(button_color=parameters.color_button_notselected)
+            else:
+                control.mark_image_rectangle = True
+                window[event].update(button_color=parameters.color_button_selected)
+            
+            window.Close()
+            opencv.marcar_regiao()
             
             
