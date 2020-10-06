@@ -19,23 +19,50 @@ def draw_rectangule(event,x,y,flags,param):
         global img
         print('x: ' + str(x))
         print('y: ' + str(y))
-        img = cv.imread(param)
+        #img = cv.imread(param)
+        img = imageRead(param)
         cv.rectangle(img, (x-offset,y-offset), (x+offset,y+offset), parameters.color_green, 2, cv.LINE_4)
-        cv.imshow(window_name,img)
+        #cv.imshow(window_name,img)
+        imageShow(window_name, img)
 
-
-def abrir_imagem(imagePath):
+def imageRead(imagePath):
     global imgPath
     imgPath = imagePath
     global img 
     img = cv.imread(imgPath)
-    
-    if img is None:
-        sys.exit("Could not read the image.")
+
+    if(needResize(img)):
+        img = resize(img)
+
+    return img
+
+def openWindow(window_name, img):
+    if(needResize(img)):
+        cv.resizeWindow(window_name, parameters.max_canvas[1], parameters.max_canvas[0])
+    else:
+        cv.resizeWindow(window_name, img.shape[1], img.shape[0])
 
     cv.namedWindow(window_name)
-    cv.imshow(window_name, img)
+    imageShow(window_name, img)
+
+def imageShow(window_name, img):
+    if(needResize(img)):
+        img = resize(img)
+
+    cv.imshow(window_name,img)
+
+def needResize(img):
+    return img.shape[0] > parameters.max_canvas[0] or img.shape[1] > parameters.max_canvas[1]
+
+def resize(img):
+    return cv.resize(img, parameters.max_canvas)
+
+def abrir_imagem(imagePath):
+    imageRead(imagePath)
+    if img is None:
+        sys.exit("Could not read the image.")
     
+    openWindow(window_name, img)
     frameMain.telaInicial()
 
 def marcar_regiao():
@@ -56,6 +83,4 @@ def marcar_regiao():
 
 def salvar_imagem():
     #converter para png
-    print('train')
-    print(img)
     cv.imwrite("../images/processing.png", img)

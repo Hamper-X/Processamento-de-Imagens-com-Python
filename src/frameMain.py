@@ -17,7 +17,6 @@ import matplotlib.image as mpimg
 def telaInicial():
     sg.theme(configs.theme)  # please make your windows colorful
 
-
 def updateButton(window, event):
     if control.button_selected == True:
         control.button_selected = False
@@ -55,16 +54,17 @@ def telaInicial():
 
     window = sg.Window(configs.projectName, layout)
 
-    folder="VAZIO"
+    folder=parameters.train_folder
     while (True):
         # event é uma ação e values é uma lista de dados
         event, values = window.read()
-        print('dsad')
+
         if event == '_op_calcular':
             updateButton(window, event)
             algorithms.calculate()
         elif event == '_op_classificar':
             updateButton(window, event)
+            opencv.salvar_imagem()
             algorithms.classificate()
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break
@@ -89,7 +89,7 @@ def telaInicial():
             window.Close()
             opencv.marcar_regiao()
         elif event == '_op_selecionar':
-            folder = values['_op_selecionar']   #Pegar diretorio das pastas 
+            folder = values[event]   #Pegar diretorio das pastas 
         elif event == '_op_treinar' and folder != "":
             algorithms.train(folder)
         elif event == 'op_zoomI':
