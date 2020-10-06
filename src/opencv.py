@@ -33,19 +33,16 @@ def abrir_imagem(imagePath):
     global imgPath
     imgPath = imagePath
     global img 
-    #img = opencv_utils.imageRead(imagePath)
-    img = cv.imread(imagePath)
+    img = opencv_utils.imageRead(imagePath)
     
     if img is None:
         sys.exit("Could not read the image.")
     
-    #opencv_utils.openWindow(window_name, img)
-    cv.namedWindow(window_name, cv.WINDOW_NORMAL)
-    cv.imshow(window_name,img)
+    opencv_utils.openWindow(window_name, img)
 
     cv.setMouseCallback(window_name,draw_rectangule,param=imgPath)
     
-    frameMain.telaInicial()
+    #frameMain.telaInicial()
 
 def marcar_regiao():
     print('teste')
@@ -53,16 +50,21 @@ def marcar_regiao():
 
     cv.setMouseCallback(window_name,draw_rectangule,param=imgPath)
 
-    frameMain.telaInicial()
+    #frameMain.telaInicial()
     
     if control.mark_image_rectangle :
         while(1):
             k = cv.waitKey(1) & 0xFF
-
+            
+            if k & 0xFF == 27:
+                break
             if k == ord('q'):
                 print('saiii')
-                salvar_imagem()
-                cv.destroyWindow(window_name)
+                break
+                #salvar_imagem()
+                #cv.destroyAllWindows()
+
+    cv.destroyAllWindows()            
 
 def salvar_imagem():
     print('teste')
