@@ -1,4 +1,7 @@
-import PySimpleGUI as sg
+pip3 install PySimpleGUI
 python -m pip install -U matplotlib
 pip install pydicom
-pip install opencv-python
+pip3 install opencv-python
+
+apenas para debian
+sudo apt-get install python3-tk

@@ -11,12 +11,13 @@ def imageRead(imagePath):
     return img
 
 def openWindow(window_name, img):
+    cv.namedWindow(window_name)
+
     if(needResize(img)):
         cv.resizeWindow(window_name, parameters.max_canvas[1], parameters.max_canvas[0])
     else:
         cv.resizeWindow(window_name, img.shape[1], img.shape[0])
-
-    cv.namedWindow(window_name)
+        
     imageShow(window_name, img)
 
 def imageShow(window_name, img):
