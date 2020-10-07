@@ -23,7 +23,7 @@ sg.theme(configs.theme)  # please make your creations colorful
 
 layoutInicial = [
     [sg.Button('Iniciar', key='_start', size=(62, 1))],
-    [sg.Button("_sobre o trabalho", size=(30, 1), key='_sobre'),
+    [sg.Button("Sobre o trabalho", size=(30, 1), key='_sobre'),
         sg.Button("Como funciona?", size=(30, 1), key='_tutorial')],
     [sg.Exit()]
 ]

@@ -44,6 +44,6 @@ def abrir_imagem(imagePath):
     cv.setMouseCallback(window_name,draw_rectangule,param=imgPath)
 
 def salvar_imagem():
-    print('teste')
+    #todo:tratar se a imagem está carregada
     #converter para png
     cv.imwrite("../images/processing.png", img)

@@ -37,7 +37,7 @@ def telaInicial():
 
         [sg.FileBrowse('Ler diretorio de imagem', size=elements_col_size, key="_op_diretorio", enable_events=True, button_color=parameters.color_button_notselected)],
         [initializeButton('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao")],
-        [sg.FolderBrowse('Selecionar características', size=elements_col_size, key="_op_selecionar", enable_events = True)],
+        [sg.FolderBrowse('Selecionar características', size=elements_col_size, key="_op_selecionar", enable_events = True, button_color=parameters.color_button_notselected)],
         [initializeButton('Treinar classificador', size=elements_col_size, key="_op_treinar")],
         [initializeButton('Abrir Imagem', size=elements_col_size, key="op_abrirImg")],
         [initializeButton('Calcular e exibir características', size=elements_col_size, key="_op_calcular")],
@@ -60,10 +60,8 @@ def telaInicial():
         event, values = window.read()
 
         if event == '_op_calcular':
-            updateButton(window, event)
             algorithms.calculate()
         elif event == '_op_classificar':
-            updateButton(window, event)
             opencv.salvar_imagem()
             algorithms.classificate()
         elif event == sg.WIN_CLOSED or event == 'Exit':
@@ -73,12 +71,11 @@ def telaInicial():
             #img = mpimg.imread(imgPath)
             #plt.imshow(img)
             #plt.show()
-            updateButton(window, event)
+            updateButton(window, event) #todo: tirar esse updateButton
             imgPath = values[event]
-            #window.Close()
-
             opencv.abrir_imagem(imgPath)
         elif event == '_op_marcar_regiao':
+            updateButton(window, event) #todo: tirar esse updateButton
             if control.mark_image_rectangle == True:
                 control.mark_image_rectangle = False
                 window[event].update(button_color=parameters.color_button_notselected)
