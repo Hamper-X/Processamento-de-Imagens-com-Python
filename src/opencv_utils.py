@@ -25,7 +25,7 @@ def imageShow(window_name, img):
         img = resize(img)
 
     cv.imshow(window_name,img)
-    cv.waitKey()
+    cv.waitKey(1)
 
 def needResize(img):
     return img.shape[0] > parameters.max_canvas[0] or img.shape[1] > parameters.max_canvas[1]
