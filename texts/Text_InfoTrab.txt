@@ -1,0 +1,3 @@
+"""Este é um aplicativo que lê imagens de exames 
+mamográficos e possibilita o reconhecimento automático da densidade da 
+mama, utilizando técnicas de descrição por textura."""
