@@ -17,7 +17,7 @@ global originalImg
 # Callback functions
 def draw_rectangule(event,x,y,flags,param):
     #todo: tratar se a imagem está carregada
-    if event == cv.EVENT_LBUTTONDOWN and control.mark_image_rectangle :
+    if event == cv.EVENT_LBUTTONDOWN and control.mark_image_rectangle and not control.image_cropped :
         control.image_checked = True
         control.pixel_checked = (x,y)
         
@@ -49,7 +49,10 @@ def abrir_imagem(imagePath):
 
 def cortar_imagem():
     if control.image_checked:
-        opencv_utils.cropImage(window_name, img)
+        global img
+        img = opencv_utils.cropImage(window_name, img)
+        opencv_utils.imageShow(window_name, img)
+        control.image_cropped = True
 
 def salvar_imagem():
     try:

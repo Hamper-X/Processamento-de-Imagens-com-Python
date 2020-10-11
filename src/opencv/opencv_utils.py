@@ -32,7 +32,7 @@ def cropImage(window_name, img):
         (control.pixel_checked[1]-parameters.offset):(control.pixel_checked[1]+parameters.offset),
         (control.pixel_checked[0]-parameters.offset):(control.pixel_checked[0]+parameters.offset)
         ]
-    imageShow(window_name, img)
+    return img    
 
 def zoom(window_name, img, op):
     if op == '+':

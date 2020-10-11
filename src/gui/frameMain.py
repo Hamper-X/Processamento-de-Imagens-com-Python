@@ -48,14 +48,7 @@ def telaInicial():
         # event é uma ação e values é uma lista de dados
         event, values = window.read()
 
-        if event == '_op_calcular':
-            algorithms.calculate()
-        elif event == '_op_classificar':
-            opencv.salvar_imagem()
-            algorithms.classificate()
-        elif event == sg.WIN_CLOSED or event == 'Exit':
-            break
-        elif event == '_op_diretorio':
+        if event == '_op_diretorio':
             #imgPath = values['_op_diretorio']
             #img = mpimg.imread(imgPath)
             #plt.imshow(img)
@@ -75,10 +68,17 @@ def telaInicial():
         elif event == '_reset_image':
             opencv.reset_image()
         elif event == '_op_selecionar':
-            folder = values[event]   #Pegar diretorio das pastas 
+            folder = values[event]   #Pegar diretorio das pastas                 
         elif event == '_op_treinar' and folder != "":
             algorithms.train(folder)
+        elif event == '_op_calcular':
+            algorithms.calculate()
+        elif event == '_op_classificar':
+            opencv.salvar_imagem()
+            algorithms.classificate()
         elif event == '_op_zoomI':
             opencv.zoom('+')
         elif event == '_op_zoomO':
-            opencv.zoom('-')    
+            opencv.zoom('-')
+        elif event == sg.WIN_CLOSED or event == 'Exit':
+            break    
