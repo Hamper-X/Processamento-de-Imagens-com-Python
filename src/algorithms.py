@@ -39,12 +39,6 @@ def train(dirPath):
 
     print('\033[31m',"="*30,'Geração de matrizes concluida.\033[m')
 
-    
-    
-    
-
-
-
 
 def calculate():
     print('Algoritmo para calcular e exibir as caracteristicas')

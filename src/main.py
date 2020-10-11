@@ -15,8 +15,8 @@ INSTRUÇÕES E DOCUMENTAÇÃO |===================================
 
 import PySimpleGUI as sg
 
-import frameMain
-import explanation
+from gui import frameMain
+from gui import explanation
 import configs
 
 sg.theme(configs.theme)  # please make your creations colorful

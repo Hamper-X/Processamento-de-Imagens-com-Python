@@ -7,3 +7,7 @@ color_button_notselected = ('white', 'dark blue')
 train_folder="birads-classes"
 image_size=(500,700)
 max_canvas=(600,600)
+
+offset = 64
+
+zoom_offset = 10
