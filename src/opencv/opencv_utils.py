@@ -1,19 +1,10 @@
 import cv2 as cv
-import pydicom as dicom
 
 import parameters
 import control
 
-def readDicomImage(imagePath):
-    ds = dicom.dcmread(imagePath)
-    dcm = ds.pixel_array*128
-    return dcm
-
 def imageRead(imagePath):
-    if(imagePath[-4:] == '.dcm'):
-        img = readDicomImage(imagePath)
-    else:
-        img = cv.imread(imagePath)
+    img = cv.imread(imagePath)
 
     if(needResize(img)):
         img = resize(img)
