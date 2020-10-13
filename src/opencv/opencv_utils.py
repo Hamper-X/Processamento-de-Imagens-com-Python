@@ -1,13 +1,17 @@
 import cv2 as cv
+import pydicom as dicom
+# from pydicom.data import get_testdata_files -> lib para testar imagens dicom
 
 import parameters
 import control
 
 def imageRead(imagePath):
-    img = cv.imread(imagePath)
-
-    if(needResize(img)):
-        img = resize(img)
+    if(imagePath[-4:] == '.dcm' or imagePath[-4:] == '.DCM'):
+        img = dicom.dcmread(imagePath).pixel_array*128
+    else:    
+        img = cv.imread(imagePath)        
+        if(needResize(img)):
+            img = resize(img)
 
     return img
 
