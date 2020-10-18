@@ -27,7 +27,7 @@ def telaInicial():
         [sg.Button('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao")],
         [sg.Button('Cortar imagem', size=elements_col_size, key='_cortar_imagem')],
         [sg.Button('Resetar imagem', size=elements_col_size, key='_reset_image')],
-        [sg.FolderBrowse('Selecionar características', size=elements_col_size, key="_op_selecionar", enable_events = True)],
+        [sg.FolderBrowse('Carregar imagens de treinamento', size=elements_col_size, key="_op_selecionar", enable_events = True)],
         [sg.Button('Treinar classificador', size=elements_col_size, key="_op_treinar")],
         [sg.Button('Calcular e exibir características', size=elements_col_size, key="_op_calcular")],
         [sg.Button('Classificar imagem/regiao', size=elements_col_size, key="_op_classificar")],
@@ -53,11 +53,13 @@ def telaInicial():
             #img = mpimg.imread(imgPath)
             #plt.imshow(img)
             #plt.show()
-            control.image_cropped = False
-            control.image_checked = False
-             
             imgPath = values[event]
-            opencv.abrir_imagem(imgPath)
+
+            if imgPath != "": 
+                control.image_cropped = False
+                control.image_checked = False
+                opencv.abrir_imagem(imgPath)
+            
         elif event == '_op_marcar_regiao':
             if control.mark_image_rectangle == True:
                 control.mark_image_rectangle = False
@@ -71,9 +73,11 @@ def telaInicial():
             opencv.reset_image()
         elif event == '_op_selecionar':
             folder = values[event]   #Pegar diretorio das pastas                 
+            algorithms.get_images_train(folder)
         elif event == '_op_treinar' and folder != "":
-            algorithms.train(folder)
+            algorithms.train()
         elif event == '_op_calcular':
+            opencv.salvar_imagem()
             algorithms.calculate()
         elif event == '_op_classificar':
             opencv.salvar_imagem()
