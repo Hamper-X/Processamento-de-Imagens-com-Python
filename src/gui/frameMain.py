@@ -53,7 +53,9 @@ def telaInicial():
             #img = mpimg.imread(imgPath)
             #plt.imshow(img)
             #plt.show()
-            control.image_checked = False 
+            control.image_cropped = False
+            control.image_checked = False
+             
             imgPath = values[event]
             opencv.abrir_imagem(imgPath)
         elif event == '_op_marcar_regiao':

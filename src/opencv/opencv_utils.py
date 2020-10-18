@@ -1,14 +1,20 @@
 import cv2 as cv
+import pydicom as dicom
+#from pydicom.data import get_testdata_files 
 
 import parameters
 import control
 
 def imageRead(imagePath):
-    img = cv.imread(imagePath)
-
+    if(imagePath[-4:] == '.dcm' or imagePath[-4:] == '.DCM'):
+        img = dicom.dcmread(imagePath).pixel_array*128
+        img = save_image(img)   
+    else:    
+        img = cv.imread(imagePath)        
+    
     if(needResize(img)):
         img = resize(img)
-
+    
     return img
 
 def openWindow(window_name, img):
@@ -19,7 +25,6 @@ def openWindow(window_name, img):
         img = resize(img)
     else:
         cv.resizeWindow(window_name, img.shape[1], img.shape[0])
-        img = resize(img)
       
     imageShow(window_name, img)
       
@@ -29,14 +34,13 @@ def imageShow(window_name, img):
 
 def cropImage(window_name, img):
     img = img[
-        (control.pixel_checked[1]-parameters.offset):(control.pixel_checked[1]+parameters.offset),
-        (control.pixel_checked[0]-parameters.offset):(control.pixel_checked[0]+parameters.offset)
+        (control.pixel_checked[1]-(parameters.offset-2)):(control.pixel_checked[1]+(parameters.offset-2)),
+        (control.pixel_checked[0]-(parameters.offset-2)):(control.pixel_checked[0]+(parameters.offset-2))
         ]
     return img    
 
 def zoom(window_name, img, op):
     if op == '+':
-        #imgZoom = cv.resize(img, None, fx=parameters.zoom_offset, fy=parameters.zoom_offset)
         img = cv.resize(img,None,fx=1.1, fy=1.1)
     else:
         img = cv.resize(img,None,fx=0.9, fy=0.9)
@@ -52,3 +56,9 @@ def needResize(img):
 
 def resize(img):
     return cv.resize(img, parameters.max_canvas)
+
+def save_image(img):
+    cv.imwrite('../images/processing_image.png' ,img)
+    img = cv.imread('../images/processing_image.png')
+    
+    return img   
