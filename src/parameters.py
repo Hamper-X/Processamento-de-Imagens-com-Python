@@ -8,6 +8,6 @@ train_folder="birads-classes"
 image_size=(500,700)
 max_canvas=(600,600)
 
-offset = 64
+offset = 66
 
 zoom_offset = 10

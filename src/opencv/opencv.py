@@ -5,13 +5,9 @@ import control
 import parameters
 from opencv import opencv_utils
 
-rectangle_offset = 128
-offset = 64
-
 window_name = 'Image'
 
 global imgPath
-#global img
 global imgDefault
 
 imgQueue = []
@@ -30,42 +26,15 @@ def set_callbacks(event,x,y,flags,param):
 def zoom(x,y,op):
     global imgDefault
     if op == '+':
-        #print(imgQueue)
-        #img = imgDefault.copy()
         img = imgQueue[len(imgQueue)-1]
         img = opencv_utils.zoom(x,y, window_name, img, '+')
         opencv_utils.show_zoom_image(window_name, img)
         imgQueue.append(img)
         imgDefault = img
-        print('LENGHT' + str(len(imgQueue)))
 
         img = imgQueueUncolor[len(imgQueueUncolor)-1]
         img = opencv_utils.zoom(x,y, window_name, img, '+')
         imgQueueUncolor.append(img)
-    else:
-        #print(imgQueue)
-        print('zoom out')
-        print('LENGHT' + str(len(imgQueue)))
-        if len(imgQueue) > 2:
-            print('OUTT')
-            imgQueue.pop()
-            imgQueueUncolor.pop()
-            img = imgQueue[-1]
-            imgDefault = img
-            #opencv_utils.imageShow(window_name, imgAfter)
-            opencv_utils.imageShow(window_name, img)
-            cv.resizeWindow(window_name, parameters.max_canvas[1], parameters.max_canvas[0])
-            
-        elif len(imgQueue) == 2:
-            print('last')
-            img = imgQueue[0].copy()
-            opencv_utils.imageShow(window_name, img)
-            cv.resizeWindow(window_name, parameters.max_canvas[1], parameters.max_canvas[0])
-            imgDefault = img
-            imgQueueUncolor.clear()
-            imgQueueUncolor.append(img)
-            imgQueue.pop()
-            
 
 def draw_rectangle(x,y):
     global imgDefault
@@ -78,15 +47,13 @@ def draw_rectangle(x,y):
     
     img = imgQueueUncolor[len(imgQueueUncolor)-1].copy()
     cv.imshow(window_name, img)
-    
+
     cv.rectangle(img, (x-parameters.offset,y-parameters.offset), (x+parameters.offset,y+parameters.offset), parameters.color_green, 2, cv.LINE_4)
     
     opencv_utils.openWindow(window_name, img)
-
+    
     imgQueue.append(img)
-    if len(imgQueue) == 1:
-        print('FIRST RETANCGLE')
-        #imgQueue.append(img)
+    imgDefault = img
 
 #Core functions
 def abrir_imagem(imagePath):
@@ -131,5 +98,7 @@ def reset_image():
 
         imgQueue.clear()
         imgQueueUncolor.clear()
+        imgQueue.append(imgDefault)
+        imgQueueUncolor.append(imgDefault)
     except NameError:
         print('Imagem não carregada')

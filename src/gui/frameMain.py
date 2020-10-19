@@ -27,6 +27,7 @@ def telaInicial():
         [sg.Button('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao", button_color=parameters.color_button_notselected)],
         [sg.Button('Cortar imagem', size=elements_col_size, key='_cortar_imagem', button_color=parameters.color_button_notselected)],
         [sg.Button('Resetar imagem', size=elements_col_size, key='_reset_image', button_color=parameters.color_button_notselected)],
+        [sg.Button('Salvar imagem', size=elements_col_size, key='_save_image', button_color=parameters.color_button_notselected)],
         [sg.FolderBrowse('Carregar imagens de treinamento', size=elements_col_size, key="_op_selecionar", enable_events = True, button_color=parameters.color_button_notselected)],
         [sg.Button('Treinar classificador', size=elements_col_size, key="_op_treinar", button_color=parameters.color_button_notselected)],
         [sg.Button('Calcular e exibir características', size=elements_col_size, key="_op_calcular", button_color=parameters.color_button_notselected)],
@@ -76,6 +77,8 @@ def telaInicial():
             opencv.cortar_imagem()
         elif event == '_reset_image':
             opencv.reset_image()
+        elif event == '_save_image':
+            opencv.salvar_imagem()
         elif event == '_op_selecionar':
             folder = values[event]   #Pegar diretorio das pastas                 
             algorithms.get_images_train(folder)
