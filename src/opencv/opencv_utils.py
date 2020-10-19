@@ -39,17 +39,51 @@ def cropImage(window_name, img):
         ]
     return img    
 
-def zoom(window_name, img, op):
+def zoom(x, y, window_name, img, op):
+    quad = quadrant(x,y)
+
+    if quad == 1:
+        img = img[
+            (0):(parameters.max_canvas[1] - 50),
+            (0):(parameters.max_canvas[0] - 50)
+        ]
+    elif quad == 2:
+        img = img[
+            (0):(parameters.max_canvas[1] - 50),
+            (50):(parameters.max_canvas[0])
+        ]
+    elif quad == 3:
+        img = img[
+            (50):(parameters.max_canvas[1]),
+            (0):(parameters.max_canvas[0] - 50)
+        ]
+    elif quad == 4:
+        img = img[
+            (50):(parameters.max_canvas[1]),
+            (50):(parameters.max_canvas[0])
+        ]
+   
+  
     if op == '+':
         img = cv.resize(img,None,fx=1.1, fy=1.1)
-    else:
+    else: 
         img = cv.resize(img,None,fx=0.9, fy=0.9)
 
-    
-    imageShow(window_name, img)
-    cv.resizeWindow(window_name, parameters.max_canvas[1], parameters.max_canvas[0])
     return img
 
+def show_zoom_image(window_name, img):
+    imageShow(window_name, img)
+    cv.resizeWindow(window_name, parameters.max_canvas[1], parameters.max_canvas[0])
+
+def quadrant(x,y):
+    if x < (parameters.max_canvas[0] / 2) and y < (parameters.max_canvas[1] / 2):
+        return 1
+    elif x > (parameters.max_canvas[0] / 2) and y < (parameters.max_canvas[1] / 2):
+        return 2
+    elif x < (parameters.max_canvas[0] / 2) and y > (parameters.max_canvas[1] / 2):
+        return 3
+    elif x > (parameters.max_canvas[0] / 2) and y > (parameters.max_canvas[1] / 2):
+        return 4
 
 def needResize(img):
     return img.shape[0] > parameters.max_canvas[0] or img.shape[1] > parameters.max_canvas[1]
