@@ -20,20 +20,21 @@ def telaInicial():
     sg.theme(configs.theme)  # please make your windows colorful
     
     layout = [
-        [sg.Text('| Menu |', size=elements_col_size)],
+        [sg.Text('                                             | Menu |', size=elements_col_size)],
         # Fazer um leitor que permitar pegar apenas imagem
 
-        [sg.FileBrowse('Buscar imagem', size=elements_col_size, key="_op_diretorio", enable_events=True)],
-        [sg.Button('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao")],
-        [sg.Button('Cortar imagem', size=elements_col_size, key='_cortar_imagem')],
-        [sg.Button('Resetar imagem', size=elements_col_size, key='_reset_image')],
-        [sg.FolderBrowse('Carregar imagens de treinamento', size=elements_col_size, key="_op_selecionar", enable_events = True)],
-        [sg.Button('Treinar classificador', size=elements_col_size, key="_op_treinar")],
-        [sg.Button('Calcular e exibir características', size=elements_col_size, key="_op_calcular")],
-        [sg.Button('Classificar imagem/regiao', size=elements_col_size, key="_op_classificar")],
+        [sg.FileBrowse('Buscar imagem', size=elements_col_size, key="_op_diretorio", enable_events=True, button_color=parameters.color_button_notselected)],
+        [sg.Button('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao", button_color=parameters.color_button_notselected)],
+        [sg.Button('Cortar imagem', size=elements_col_size, key='_cortar_imagem', button_color=parameters.color_button_notselected)],
+        [sg.Button('Resetar imagem', size=elements_col_size, key='_reset_image', button_color=parameters.color_button_notselected)],
+        [sg.Button('Salvar imagem', size=elements_col_size, key='_save_image', button_color=parameters.color_button_notselected)],
+        [sg.FolderBrowse('Carregar imagens de treinamento', size=elements_col_size, key="_op_selecionar", enable_events = True, button_color=parameters.color_button_notselected)],
+        [sg.Button('Treinar classificador', size=elements_col_size, key="_op_treinar", button_color=parameters.color_button_notselected)],
+        [sg.Button('Calcular e exibir características', size=elements_col_size, key="_op_calcular", button_color=parameters.color_button_notselected)],
+        [sg.Button('Classificar imagem/regiao', size=elements_col_size, key="_op_classificar", button_color=parameters.color_button_notselected)],
         [
-            sg.Button('zoom in', size=zoom_buttons_size, key="_op_zoomI"), 
-            sg.Button('zoom out', size=zoom_buttons_size, key="_op_zoomO")
+            sg.Button('Zoom', size=elements_col_size, key="_op_zoomI", button_color=parameters.color_button_notselected) 
+            #sg.Button('zoom out', size=zoom_buttons_size, key="_op_zoomO", button_color=parameters.color_button_notselected)
         ],
 
         #[sg.Output(size=(55, 12))],
@@ -61,6 +62,11 @@ def telaInicial():
                 opencv.abrir_imagem(imgPath)
             
         elif event == '_op_marcar_regiao':
+            control.button_zoomIn = False
+            control.button_zoomOut = False
+
+            #window['_op_zoomO'].update(button_color=parameters.color_button_notselected)
+            window['_op_zoomI'].update(button_color=parameters.color_button_notselected)
             if control.mark_image_rectangle == True:
                 control.mark_image_rectangle = False
                 window[event].update(button_color=parameters.color_button_notselected)
@@ -71,6 +77,8 @@ def telaInicial():
             opencv.cortar_imagem()
         elif event == '_reset_image':
             opencv.reset_image()
+        elif event == '_save_image':
+            opencv.salvar_imagem()
         elif event == '_op_selecionar':
             folder = values[event]   #Pegar diretorio das pastas                 
             algorithms.get_images_train(folder)
@@ -83,8 +91,28 @@ def telaInicial():
             opencv.salvar_imagem()
             algorithms.classificate()
         elif event == '_op_zoomI':
-            opencv.zoom('+')
+            window['_op_marcar_regiao'].update(button_color=parameters.color_button_notselected)
+            #window['_op_zoomO'].update(button_color=parameters.color_button_notselected)
+
+            control.button_zoomIn = not control.button_zoomIn
+            if control.button_zoomIn == True:
+                window[event].update(button_color=parameters.color_button_selected)
+            else:
+                window[event].update(button_color=parameters.color_button_notselected)
+
+            control.mark_image_rectangle = False
+            control.button_zoomOut = False
         elif event == '_op_zoomO':
-            opencv.zoom('-')
+            window['_op_marcar_regiao'].update(button_color=parameters.color_button_notselected)
+            window['_op_zoomI'].update(button_color=parameters.color_button_notselected)
+            
+            control.button_zoomOut = not control.button_zoomOut
+            if control.button_zoomOut == True:
+                window[event].update(button_color=parameters.color_button_selected)
+            else:
+                window[event].update(button_color=parameters.color_button_notselected)
+
+            control.mark_image_rectangle = False
+            control.button_zoomIn = False
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break    
