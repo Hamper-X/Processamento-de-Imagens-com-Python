@@ -20,7 +20,7 @@ def telaInicial():
     sg.theme(configs.theme)  # please make your windows colorful
     
     layout = [
-        [sg.Text('| Menu |', size=elements_col_size)],
+        [sg.Text('                                             | Menu |', size=elements_col_size)],
         # Fazer um leitor que permitar pegar apenas imagem
 
         [sg.FileBrowse('Buscar imagem', size=elements_col_size, key="_op_diretorio", enable_events=True, button_color=parameters.color_button_notselected)],
