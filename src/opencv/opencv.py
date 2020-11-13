@@ -1,8 +1,11 @@
 import cv2 as cv
+import math
 import sys
+
 
 import control
 import parameters
+import algorithms
 from opencv import opencv_utils
 
 window_name = 'Image'
@@ -43,7 +46,7 @@ def zoom(x, y, op):
 
 def draw_rectangle(x, y):
     global imgDefault
-    print('ha')
+
     control.image_checked = True
     control.pixel_checked = (x, y)
 
@@ -113,3 +116,15 @@ def reset_image():
         imgQueueUncolor.append(imgDefault)
     except NameError:
         print('Imagem não carregada')
+
+
+def calculate_haralick():
+    global imgDefault
+    imgDefault = cv.cvtColor(imgDefault, cv.COLOR_BGR2GRAY)
+
+    for i in range(imgDefault.shape[0]):
+        for j in range(imgDefault.shape[1]):
+            imgDefault[i][j] = math.ceil(imgDefault[i][j]/8)
+
+    print(imgDefault)
+    return algorithms.calculate(imgDefault)
