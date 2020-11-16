@@ -1,6 +1,7 @@
 import os
 from PIL import Image
 import numpy as np
+from random import randint
 #import matplotlib.pyplot as plt #Used in the comparison below
 
 """
@@ -23,7 +24,7 @@ def get_images_train(dirPath):
         diretorio_04 = os.listdir(dir_04)
     except FileNotFoundError:
         print('Diretórios 1/2/3/4 não encontrados')
-        return
+        return False
 
     print('\033[33m',"="*30,'Leitura concluida, gerando matrizes...\033[m')
     imgMatrix = []
@@ -64,3 +65,125 @@ def generatinMatrix(imgPath):
     im2 = np.array(im2) 
     return im2
     #print(im2)
+
+def valid_gray_scale(grayScale):
+    valor = 32
+    if grayScale.isdigit():
+        valor = grayScale
+    return valor
+
+def get_100_path(dirPath,choose):
+    img25_global = []
+    img75_global = []
+    contador = 0
+    used = []
+    sort_validation = True
+    
+    dir_01 = dirPath + '/1/'
+    dir_02 = dirPath + '/2/'
+    dir_03 = dirPath + '/3/'
+    dir_04 = dirPath + '/4/'
+
+    try:
+        diretorio_01 = os.listdir(dir_01)
+        diretorio_02 = os.listdir(dir_02)
+        diretorio_03 = os.listdir(dir_03)
+        diretorio_04 = os.listdir(dir_04)
+    except FileNotFoundError:
+        print('Diretórios 1/2/3/4 não encontrados')
+        return False
+
+    # Get random positions 75%
+    while contador<75:
+        index = randint(0,100)
+        for values in used:
+            if values == index:
+                sort_validation = False
+        if sort_validation == True:
+            used.append(index)
+            contador += 1
+        sort_validation = True
+
+
+    # Alocar 75%
+    for positions in used:
+        img75_global.append(diretorio_01[positions])
+        img75_global.append(diretorio_02[positions])
+        img75_global.append(diretorio_03[positions])
+        img75_global.append(diretorio_04[positions])
+
+
+    # Alocar 25% restantes
+    x = 0
+    while x<100:
+        for positions in used:
+            if positions == x:
+                sort_validation = False
+        if sort_validation == True:
+            img25_global.append(diretorio_01[x])
+            img25_global.append(diretorio_02[x])
+            img25_global.append(diretorio_03[x])
+            img25_global.append(diretorio_04[x])
+        x += 1
+
+    if choose == True:
+        return img75_global
+    else: 
+        return img25_global
+    
+def get_100_matrix(dirPath,choose):
+    img25_global = []
+    img75_global = []
+    contador = 0
+    used = []
+    sort_validation = True
+    
+    dir_01 = dirPath + '/1/'
+    dir_02 = dirPath + '/2/'
+    dir_03 = dirPath + '/3/'
+    dir_04 = dirPath + '/4/'
+
+    try:
+        diretorio_01 = os.listdir(dir_01)
+        diretorio_02 = os.listdir(dir_02)
+        diretorio_03 = os.listdir(dir_03)
+        diretorio_04 = os.listdir(dir_04)
+    except FileNotFoundError:
+        print('Diretórios 1/2/3/4 não encontrados')
+        return False
+
+    # Get random positions 75%
+    while contador<75:
+        index = randint(0,100)
+        for values in used:
+            if values == index:
+                sort_validation = False
+        if sort_validation == True:
+            used.append(index)
+            contador += 1
+        sort_validation = True
+
+
+    # Alocar 75%
+    for positions in used:
+        img75_global.append(diretorio_01[positions])
+        img75_global.append(diretorio_02[positions])
+        img75_global.append(diretorio_03[positions])
+        img75_global.append(diretorio_04[positions])
+
+
+    # Alocar 25% restantes
+    x = 0
+    while x<100:
+        for positions in used:
+            if positions == x:
+                sort_validation = False
+        if sort_validation == True:
+            img25_global.append(diretorio_01[x])
+            img25_global.append(diretorio_02[x])
+            img25_global.append(diretorio_03[x])
+            img25_global.append(diretorio_04[x])
+        x += 1
+
+    
+    
