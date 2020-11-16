@@ -66,12 +66,24 @@ def generatinMatrix(imgPath):
     return im2
     #print(im2)
 
+"""
+    * Objetivo:     Validar dado de entrada alterando a escala de cinza
+    * Argumentos:   Escala de cinza fornecida
+    * Retorno:      Valor da escala de cinza verificada/default
+"""
 def valid_gray_scale(grayScale):
     valor = 32
     if grayScale.isdigit():
         valor = grayScale
     return valor
 
+# AREA DE SELEÇÃO ALEATORIA |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+"""
+    * Objetivo:     Separar 75% das imagens escolhidas de forma aleatória, mas balanceadas entre as classes, das 25% que serão usadas posteriormente.
+    * Argumentos:   Diretorio de localização da pasta contendo os 4 sub diretorios e o valor booleano. True: retorna vetor com 75% | False retorna vetor de 25%
+    * Retorno:      Vetor com caminho das imagens para
+"""
 def get_100_path(dirPath,choose):
     img25_global = []
     img75_global = []
@@ -134,6 +146,12 @@ def get_100_path(dirPath,choose):
         print(img25_global) 
         return img25_global
     
+
+"""
+    * Objetivo:     Separar 75% das imagens escolhidas de forma aleatória, mas balanceadas entre as classes, das 25% que serão usadas posteriormente.
+    * Argumentos:   Diretorio de localização da pasta contendo os 4 sub diretorios e o valor booleano. True: retorna vetor com 75% | False retorna vetor de 25%
+    * Retorno:      Vetor com matriz das imagens para treino.
+"""
 def get_100_matrix(dirPath,choose):
     img25_global = []
     img75_global = []
