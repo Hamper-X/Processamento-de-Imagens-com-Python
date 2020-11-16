@@ -127,8 +127,11 @@ def get_100_path(dirPath,choose):
         x += 1
 
     if choose == True:
+        print(img75_global)
         return img75_global
-    else: 
+    else:
+        print("saidno 25\n")
+        print(img25_global) 
         return img25_global
     
 def get_100_matrix(dirPath,choose):
@@ -137,6 +140,11 @@ def get_100_matrix(dirPath,choose):
     contador = 0
     used = []
     sort_validation = True
+
+    matrix_img01 = []
+    matrix_img02 = []
+    matrix_img03 = []
+    matrix_img04 = []
     
     dir_01 = dirPath + '/1/'
     dir_02 = dirPath + '/2/'
@@ -151,6 +159,19 @@ def get_100_matrix(dirPath,choose):
     except FileNotFoundError:
         print('Diretórios 1/2/3/4 não encontrados')
         return False
+    
+    for imgWay in diretorio_01:
+        #print("imgWay = ",dir_01+imgWay)
+        matrix_img01.append(generatinMatrix(dir_01+imgWay))
+    for imgWay in diretorio_02:
+        #print("imgWay = ",dir_02+imgWay)
+        matrix_img02.append(generatinMatrix(dir_02+imgWay))
+    for imgWay in diretorio_03:
+        #print("imgWay = ",dir_03+imgWay)
+        matrix_img03.append(generatinMatrix(dir_03+imgWay))
+    for imgWay in diretorio_04:
+        #print("imgWay = ",dir_04+imgWay)
+        matrix_img04.append(generatinMatrix(dir_04+imgWay))
 
     # Get random positions 75%
     while contador<75:
@@ -166,10 +187,10 @@ def get_100_matrix(dirPath,choose):
 
     # Alocar 75%
     for positions in used:
-        img75_global.append(diretorio_01[positions])
-        img75_global.append(diretorio_02[positions])
-        img75_global.append(diretorio_03[positions])
-        img75_global.append(diretorio_04[positions])
+        img75_global.append(matrix_img01[positions])
+        img75_global.append(matrix_img02[positions])
+        img75_global.append(matrix_img03[positions])
+        img75_global.append(matrix_img04[positions])
 
 
     # Alocar 25% restantes
@@ -179,11 +200,14 @@ def get_100_matrix(dirPath,choose):
             if positions == x:
                 sort_validation = False
         if sort_validation == True:
-            img25_global.append(diretorio_01[x])
-            img25_global.append(diretorio_02[x])
-            img25_global.append(diretorio_03[x])
-            img25_global.append(diretorio_04[x])
+            img25_global.append(matrix_img01[x])
+            img25_global.append(matrix_img02[x])
+            img25_global.append(matrix_img03[x])
+            img25_global.append(matrix_img04[x])
         x += 1
 
-    
+    if choose == True:
+        return img75_global
+    else: 
+        return img25_global
     

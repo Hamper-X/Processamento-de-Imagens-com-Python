@@ -82,6 +82,7 @@ def telaInicial():
         elif event == '_op_selecionar':
             folder = values[event]   #Pegar diretorio das pastas                 
             algorithms.get_images_train(folder)
+            algorithms.get_100_path(folder,True)
         elif event == '_op_treinar' and folder != "":
             algorithms.train()
         elif event == '_op_calcular':
