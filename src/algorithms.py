@@ -41,9 +41,9 @@ def get_images_train(dirPath):
         #print("imgWay = ",dir_04+imgWay)
         imgMatrix.append(generatinMatrix(dir_04+imgWay))
     
-    print(imgMatrix)
-    print('Imagens lidas' + str(len(imgMatrix)))
-    print('\033[31m',"="*30,'Geração de matrizes concluida.\033[m')
+    # print(imgMatrix)
+    # print('Imagens lidas' + str(len(imgMatrix)))
+    # print('\033[31m',"="*30,'Geração de matrizes concluida.\033[m')
 
 def train():
     print('\033[34m',"="*30,'Algoritmo para treinar o classificador\033[m')
@@ -60,7 +60,7 @@ def classificate():
     * Retorno:      Matriz gerada pela imagem
 """
 def generatinMatrix(imgPath):
-    print('Image path ' + imgPath)
+    #print('Image path ' + imgPath)
     im2 = Image.open(imgPath).convert('RGB')                  
     im2 = np.array(im2) 
     return im2
@@ -139,11 +139,8 @@ def get_100_path(dirPath,choose):
         x += 1
 
     if choose == True:
-        print(img75_global)
         return img75_global
     else:
-        print("saidno 25\n")
-        print(img25_global) 
         return img25_global
     
 
