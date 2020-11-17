@@ -9,6 +9,8 @@ import math
 
 clf_svm = LinearSVC(random_state=9)
 
+haralick_distance = 16
+
 # import matplotlib.pyplot as plt #Used in the comparison below
 
 """
@@ -38,16 +40,16 @@ def get_images_train(dirPath):
     print('\033[33m', "="*30, 'Leitura concluida, gerando matrizes...\033[m')
     imgMatrix = []
     for imgWay in diretorio_01:
-        #print("imgWay = ",dir_01+imgWay)
+        # print("imgWay = ",dir_01+imgWay)
         imgMatrix.append(generatinMatrix(dir_01+imgWay))
     for imgWay in diretorio_02:
-        #print("imgWay = ",dir_02+imgWay)
+        # print("imgWay = ",dir_02+imgWay)
         imgMatrix.append(generatinMatrix(dir_02+imgWay))
     for imgWay in diretorio_03:
-        #print("imgWay = ",dir_03+imgWay)
+        # print("imgWay = ",dir_03+imgWay)
         imgMatrix.append(generatinMatrix(dir_03+imgWay))
     for imgWay in diretorio_04:
-        #print("imgWay = ",dir_04+imgWay)
+        # print("imgWay = ",dir_04+imgWay)
         imgMatrix.append(generatinMatrix(dir_04+imgWay))
 
     print('Imagens lidas' + str(len(imgMatrix)))
@@ -59,8 +61,8 @@ def train(dirPath):
 
     train_features = []
     train_label = []
-
     train_names = os.listdir(dirPath)
+    
     for train_name in train_names:
         cur_label = train_name
         cur_path = dirPath + "/" + train_name
@@ -70,35 +72,44 @@ def train(dirPath):
             gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
             gray = resample(gray)
 
+            features = np.zeros((4, 13))
             i = 1
-            while i <= 16:
-                features = get_haralick_features(gray, i)
-                train_features.append(features)
-                train_label.append(cur_label)
-
+            while i <= haralick_distance:
+                feature = get_haralick_features(gray, i)
+                features += feature
                 i = i*2
 
+            features_mean = features.mean(axis=0)
+            train_features.append(features_mean)
+            train_label.append(cur_label)
+
+    print('Training')
     clf_svm.fit(train_features, train_label)
 
 
 def calculate(img):
-    print('Algoritmo para calcular e exibir as caracteristicas')
+    #print('Algoritmo para calcular e exibir as caracteristicas')
 
-    features = get_haralick_features(img, 2)
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    gray = resample(gray)
 
-    prediction = clf_svm.predict(features.reshape(1, -1))[0]
-    cv.putText(img, prediction, (20, 30),
-               cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 255), 3)
+    features = np.zeros((4, 13))
+    i = 1
+    while i <= haralick_distance:
+        feature = get_haralick_features(gray, i)
+        features += feature
+        i = i*2
 
-    return features
+    features_predict = features.mean(axis=0)
+    
+    prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
 
+    return prediction
 
 def get_haralick_features(img, size):
     textures = mt.features.haralick(img, distance=size)
 
-    haralick_mean = textures.mean(axis=0)
-
-    return haralick_mean
+    return textures
 
 
 def resample(img):
@@ -127,8 +138,38 @@ def generatinMatrix(imgPath):
     return im2
     # print(im2)
 
+def prediction_result(prediction_list):
+    a_prediction_result = [0, 0, 0, 0]
+    for prediction in prediction_list:
+        if int(prediction) == 1:
+            a_prediction_result[0] += 1
+        elif int(prediction) == 2:
+            a_prediction_result[1] += 1
+        elif int(prediction) == 3:
+            a_prediction_result[2] += 1
+        elif int(prediction) == 4:
+            a_prediction_result[3] += 1
+    
+    print('Prediction Result')
+    print(a_prediction_result)
 
-train("D:\Maycon\Documentos\codes\python\imagens")
-img = cv.imread(
-    "D:\Maycon\Documentos\codes\python\imagens\\1\p_d_left_cc(12).png")
-calculate(img)
+
+get_images_train("D:\Maycon\Documentos\codes\python\imagens")
+#train("D:\Maycon\Documentos\codes\python\imagens")
+
+print('Calculando resultado')
+path = "D:\Maycon\Documentos\codes\python\imagens"
+paths = os.listdir(path)
+
+for pa in paths:
+    images = os.listdir(path + '\\' + pa)
+    cont = 0
+    prediction_list = []
+    for image in images:
+        if cont < 25:
+            img = cv.imread(path + '\\' + pa + '\\' + image)
+            prediction_list.append(calculate(img))
+            cont += 1
+    
+    print('Result ' + str(pa))
+    prediction_result(prediction_list)        
