@@ -8,7 +8,20 @@ import math
 
 clf_svm = LinearSVC(random_state=9)
 
+#todo: calcular o valor da reamostragem e usar na função resample()
+gray_scale_resample = 32
+
 haralick_distance = 16
+
+images_class1_train = []
+images_class2_train = []
+images_class3_train = []
+images_class4_train = []
+
+images_class1_classificate = []
+images_class2_classificate = []
+images_class3_classificate = []
+images_class4_classificate = []
 
 # import matplotlib.pyplot as plt #Used in the comparison below
 from random import randint
@@ -37,22 +50,28 @@ def get_images_train(dirPath):
         return False
 
     print('\033[33m', "="*30, 'Leitura concluida, gerando matrizes...\033[m')
-    imgMatrix = []
-    for imgWay in diretorio_01:
-        # print("imgWay = ",dir_01+imgWay)
-        imgMatrix.append(generatinMatrix(dir_01+imgWay))
-    for imgWay in diretorio_02:
-        # print("imgWay = ",dir_02+imgWay)
-        imgMatrix.append(generatinMatrix(dir_02+imgWay))
-    for imgWay in diretorio_03:
-        # print("imgWay = ",dir_03+imgWay)
-        imgMatrix.append(generatinMatrix(dir_03+imgWay))
-    for imgWay in diretorio_04:
-        # print("imgWay = ",dir_04+imgWay)
-        imgMatrix.append(generatinMatrix(dir_04+imgWay))
-    print('Imagens lidas' + str(len(imgMatrix)))
+    append_images(images_class1_train, diretorio_01, dir_01, 75)
+    append_images(images_class2_train, diretorio_02, dir_02, 75)
+    append_images(images_class3_train, diretorio_03, dir_03, 75)
+    append_images(images_class4_train, diretorio_04, dir_04, 75)
+
+    append_images(images_class1_classificate, diretorio_01, dir_01, 25)
+    append_images(images_class2_classificate, diretorio_02, dir_02, 25)
+    append_images(images_class3_classificate, diretorio_03, dir_03, 25)
+    append_images(images_class4_classificate, diretorio_04, dir_04, 25)
+   
     print('\033[31m', "="*30, 'Geração de matrizes concluida.\033[m')
 
+def append_images(images_class_array, directory_list, dir_path, quant):
+    i = 0
+    while i < quant:
+        choose = randint(0,len(directory_list)-1)
+        img_name = directory_list[choose]
+
+        if img_name in directory_list:
+            images_class_array.append(generatinMatrix(dir_path+img_name))
+            directory_list.remove(img_name)
+            i += 1
 
 def train(dirPath):
     print('\033[34m', "="*30, 'Algoritmo para treinar o classificador\033[m')
@@ -84,15 +103,11 @@ def train(dirPath):
     print('Training')
     clf_svm.fit(train_features, train_label)
 
-
 def calculate(img):
     #print('Algoritmo para calcular e exibir as caracteristicas')
 
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     gray = resample(gray)
-    
-    # print('Imagens lidas' + str(len(imgMatrix)))
-    # print('\033[31m',"="*30,'Geração de matrizes concluida.\033[m')
 
     features = np.zeros((4, 13))
     while i <= haralick_distance:
@@ -164,155 +179,6 @@ def valid_gray_scale(grayScale):
     if grayScale.isdigit():
         valor = grayScale
     return valor
-
-# AREA DE SELEÇÃO ALEATORIA |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-"""
-    * Objetivo:     Separar 75% das imagens escolhidas de forma aleatória, mas balanceadas entre as classes, das 25% que serão usadas posteriormente.
-    * Argumentos:   Diretorio de localização da pasta contendo os 4 sub diretorios e o valor booleano. True: retorna vetor com 75% | False retorna vetor de 25%
-    * Retorno:      Vetor com caminho das imagens para
-"""
-def get_100_path(dirPath,choose):
-    img25_global = []
-    img75_global = []
-    contador = 0
-    used = []
-    sort_validation = True
-    
-    dir_01 = dirPath + '/1/'
-    dir_02 = dirPath + '/2/'
-    dir_03 = dirPath + '/3/'
-    dir_04 = dirPath + '/4/'
-
-    try:
-        diretorio_01 = os.listdir(dir_01)
-        diretorio_02 = os.listdir(dir_02)
-        diretorio_03 = os.listdir(dir_03)
-        diretorio_04 = os.listdir(dir_04)
-    except FileNotFoundError:
-        print('Diretórios 1/2/3/4 não encontrados')
-        return False
-
-    # Get random positions 75%
-    while contador<75:
-        index = randint(0,100)
-        for values in used:
-            if values == index:
-                sort_validation = False
-        if sort_validation == True:
-            used.append(index)
-            contador += 1
-        sort_validation = True
-
-
-    # Alocar 75%
-    for positions in used:
-        img75_global.append(diretorio_01[positions])
-        img75_global.append(diretorio_02[positions])
-        img75_global.append(diretorio_03[positions])
-        img75_global.append(diretorio_04[positions])
-
-
-    # Alocar 25% restantes
-    x = 0
-    while x<100:
-        for positions in used:
-            if positions == x:
-                sort_validation = False
-        if sort_validation == True:
-            img25_global.append(diretorio_01[x])
-            img25_global.append(diretorio_02[x])
-            img25_global.append(diretorio_03[x])
-            img25_global.append(diretorio_04[x])
-        x += 1
-
-    if choose == True:
-        return img75_global
-    else:
-        return img25_global
-    
-
-"""
-    * Objetivo:     Separar 75% das imagens escolhidas de forma aleatória, mas balanceadas entre as classes, das 25% que serão usadas posteriormente.
-    * Argumentos:   Diretorio de localização da pasta contendo os 4 sub diretorios e o valor booleano. True: retorna vetor com 75% | False retorna vetor de 25%
-    * Retorno:      Vetor com matriz das imagens para treino.
-"""
-def get_100_matrix(dirPath,choose):
-    img25_global = []
-    img75_global = []
-    contador = 0
-    used = []
-    sort_validation = True
-
-    matrix_img01 = []
-    matrix_img02 = []
-    matrix_img03 = []
-    matrix_img04 = []
-    
-    dir_01 = dirPath + '/1/'
-    dir_02 = dirPath + '/2/'
-    dir_03 = dirPath + '/3/'
-    dir_04 = dirPath + '/4/'
-
-    try:
-        diretorio_01 = os.listdir(dir_01)
-        diretorio_02 = os.listdir(dir_02)
-        diretorio_03 = os.listdir(dir_03)
-        diretorio_04 = os.listdir(dir_04)
-    except FileNotFoundError:
-        print('Diretórios 1/2/3/4 não encontrados')
-        return False
-    
-    for imgWay in diretorio_01:
-        #print("imgWay = ",dir_01+imgWay)
-        matrix_img01.append(generatinMatrix(dir_01+imgWay))
-    for imgWay in diretorio_02:
-        #print("imgWay = ",dir_02+imgWay)
-        matrix_img02.append(generatinMatrix(dir_02+imgWay))
-    for imgWay in diretorio_03:
-        #print("imgWay = ",dir_03+imgWay)
-        matrix_img03.append(generatinMatrix(dir_03+imgWay))
-    for imgWay in diretorio_04:
-        #print("imgWay = ",dir_04+imgWay)
-        matrix_img04.append(generatinMatrix(dir_04+imgWay))
-
-    # Get random positions 75%
-    while contador<75:
-        index = randint(0,100)
-        for values in used:
-            if values == index:
-                sort_validation = False
-        if sort_validation == True:
-            used.append(index)
-            contador += 1
-        sort_validation = True
-
-
-    # Alocar 75%
-    for positions in used:
-        img75_global.append(matrix_img01[positions])
-        img75_global.append(matrix_img02[positions])
-        img75_global.append(matrix_img03[positions])
-        img75_global.append(matrix_img04[positions])
-
-
-    # Alocar 25% restantes
-    x = 0
-    while x<100:
-        for positions in used:
-            if positions == x:
-                sort_validation = False
-        if sort_validation == True:
-            img25_global.append(matrix_img01[x])
-            img25_global.append(matrix_img02[x])
-            img25_global.append(matrix_img03[x])
-            img25_global.append(matrix_img04[x])
-        x += 1
-
-    if choose == True:
-        return img75_global
-    else: 
-        return img25_global
     
 def haralick_test_function():
     get_images_train("D:\Maycon\Documentos\codes\python\imagens")
@@ -331,3 +197,5 @@ def haralick_test_function():
                 img = cv.imread(path + '\\' + pa + '\\' + image)
                 prediction_list.append(calculate(img))
                 cont += 1
+
+haralick_test_function()
