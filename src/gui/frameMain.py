@@ -24,32 +24,21 @@ def telaInicial():
         [sg.Text('                                             | Menu |',
                  size=elements_col_size)],
         # Fazer um leitor que permitar pegar apenas imagem
-
-        [sg.FileBrowse('Buscar imagem', size=elements_col_size, key="_op_diretorio",
-                       enable_events=True, button_color=parameters.color_button_notselected)],
-        [sg.Button('Marcar região de interesse', size=elements_col_size,
-                   key="_op_marcar_regiao", button_color=parameters.color_button_notselected)],
-        [sg.Button('Cortar imagem', size=elements_col_size, key='_cortar_imagem',
-                   button_color=parameters.color_button_notselected)],
-        [sg.Button('Resetar imagem', size=elements_col_size, key='_reset_image',
-                   button_color=parameters.color_button_notselected)],
-        [sg.Button('Salvar imagem', size=elements_col_size, key='_save_image',
-                   button_color=parameters.color_button_notselected)],
-        [sg.FolderBrowse('Carregar imagens de treinamento', size=elements_col_size, key="_op_selecionar",
-                         enable_events=True, button_color=parameters.color_button_notselected)],
-        [sg.Button('Treinar classificador', size=elements_col_size,
-                   key="_op_treinar", button_color=parameters.color_button_notselected)],
-        [sg.Button('Calcular e exibir características', size=elements_col_size,
-                   key="_op_calcular", button_color=parameters.color_button_notselected)],
-        [sg.Button('Classificar imagem/regiao', size=elements_col_size,
-                   key="_op_classificar", button_color=parameters.color_button_notselected)],
-        [
-            sg.Button('Zoom', size=elements_col_size, key="_op_zoomI",
-                      button_color=parameters.color_button_notselected)
+        [sg.FileBrowse('Buscar imagem', size=elements_col_size, key="_op_diretorio", enable_events=True, button_color=parameters.color_button_notselected)],
+        [sg.Button('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao", button_color=parameters.color_button_notselected)],
+        [sg.Button('Cortar imagem', size=elements_col_size, key='_cortar_imagem', button_color=parameters.color_button_notselected)],
+        [sg.Button('Resetar imagem', size=elements_col_size, key='_reset_image', button_color=parameters.color_button_notselected)],
+        [sg.Button('Salvar imagem', size=elements_col_size, key='_save_image', button_color=parameters.color_button_notselected)],
+        [sg.FolderBrowse('Carregar imagens de treinamento', size=elements_col_size, key="_op_selecionar", enable_events = True, button_color=parameters.color_button_notselected)],
+        [sg.Button('Treinar classificador', size=elements_col_size, key="_op_treinar", button_color=parameters.color_button_notselected)],
+        [sg.Button('Calcular e exibir características', size=elements_col_size, key="_op_calcular", button_color=parameters.color_button_notselected)],
+        [sg.Input('Gray Scale 1-32',key='_op_gray_scale'),sg.Button('Save', size=(8,0), key="_op_save_gray", button_color=parameters.color_button_notselected)],
+        [sg.Button('Classificar imagem/regiao', size=elements_col_size, key="_op_classificar", button_color=parameters.color_button_notselected)],
+        [sg.Button('Zoom', size=elements_col_size, key="_op_zoomI", button_color=parameters.color_button_notselected) 
             #sg.Button('zoom out', size=zoom_buttons_size, key="_op_zoomO", button_color=parameters.color_button_notselected)
         ],
-
         #[sg.Output(size=(55, 12))],
+        [sg.Output(size=(54,12))],
         [sg.Exit()]
     ]
 
@@ -96,6 +85,7 @@ def telaInicial():
         elif event == '_op_selecionar':
             folder = values[event]  # Pegar diretorio das pastas
             algorithms.get_images_train(folder)
+            algorithms.get_100_path(folder,True)
         elif event == '_op_treinar' and folder != "":
             algorithms.train()
         elif event == '_op_calcular':
@@ -104,6 +94,11 @@ def telaInicial():
         elif event == '_op_classificar':
             opencv.salvar_imagem()
             algorithms.classificate()
+
+        elif event == '_op_save_gray':
+            grayScale = values['_op_gray_scale']
+            grayScale_verificad = algorithms.valid_gray_scale(grayScale)
+
         elif event == '_op_zoomI':
             window['_op_marcar_regiao'].update(
                 button_color=parameters.color_button_notselected)
