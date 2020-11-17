@@ -12,11 +12,6 @@ import parameters
 elements_col_size = (50, 0)
 zoom_buttons_size = (24, 0)
 
-
-def telaInicial():
-    sg.theme(configs.theme)  # please make your windows colorful
-
-
 def telaInicial():
     sg.theme(configs.theme)  # please make your windows colorful
 
