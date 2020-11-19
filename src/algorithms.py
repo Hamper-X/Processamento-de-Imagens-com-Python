@@ -6,6 +6,8 @@ from random import randint
 import numpy as np
 import mahotas as mt
 from sklearn.svm import LinearSVC
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
 import cv2 as cv
 
 clf_svm = LinearSVC(random_state=9)
@@ -265,4 +267,39 @@ def haralick_test_function():
                 prediction_list.append(classificate(img))
                 cont += 1
 
-#haralick_test_function()
+"""
+    * Objetivo:     
+            - Gerar matrix de confusão             
+            - Metricas de sensibilidade media 
+            - Especificidade Media
+    * Argumentos:   - Vetor de valores reais 
+                    - Vetor de valores preditos 
+    * Retorno: --//--  
+            - Print da matriz de confusão
+            - Print da sensibilidade média
+            - Print da especificidade média
+"""
+def get_confusion_matrix(real_values, predicts_classificator):
+    print("Matrix de confusão:\n",pd.crosstab(real_values, lg_model.predict(predicts_classificator),
+        rownames =['Correct class'], colnames =['Predict class'],
+        margins = True),"\n")
+    sense = 0
+    matrix = confusion_matrix(real_values, predicts_classificator)
+    for i in range(0,matrix.shape(0)):
+        for j in range(0,matrix.shape(1)):
+            if i == j:
+                sense += matrix[i][j]/100
+    print("Acuraricia/Sensibilidade = ", (sense), "\n")        
+    soma = 0 
+    for i in range(0,matrix.shape(0)):
+        for j in range(0,matrix.shape(1)):
+            if i!=j:
+                soma += matrix[i][j]/300
+            else:
+                break
+    soma = 1 - soma
+    print("Especificidade = ", (soma), "\n") 
+    
+    
+haralick_test_function()
+
