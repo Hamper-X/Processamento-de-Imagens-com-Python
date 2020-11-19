@@ -2,6 +2,7 @@ import os
 import glob
 import math
 
+from random import randint
 import numpy as np
 import mahotas as mt
 from sklearn.svm import LinearSVC
@@ -23,9 +24,6 @@ images_class1_classificate = []
 images_class2_classificate = []
 images_class3_classificate = []
 images_class4_classificate = []
-
-# import matplotlib.pyplot as plt #Used in the comparison below
-from random import randint
 
 """
     * Argumentos:   Diretorio da pasta com as imagens
@@ -77,18 +75,15 @@ def append_images(images_class_array, directory_list, dir_path, quant):
 def train(dirPath):
     get_images_train(dirPath)
     
-    print('Trainando classificador')
+    print('Treinando classificador')
     haralick_features, haralick_labels = get_haralick_arrays()
-    hu_features, hu_labels = get_hu_arrays()
     clf_svm.fit(haralick_features, haralick_labels)
-    # clf_svm.fit(hu_features, hu_labels)
     
     #hu_features, hu_labels = get_hu_arrays()
-
-    train(haralick_features, haralick_label)
-    train(hu_features, hu_labels)
+    #clf_svm.fit(hu_features, hu_labels)
 
 def get_haralick_arrays():
+    print('Calculando matrizes de co-ocorrência de haralick')
     train_features = []
     train_labels = []
     
@@ -111,6 +106,7 @@ def get_haralick_arrays():
     return (train_features, train_labels)
 
 def get_hu_arrays():
+    print('Calculando momentos invariantes de Hu')
     train_features = []
     train_labels = []
     
@@ -237,27 +233,8 @@ def classificate(img):
 
 def generatinMatrix(imgPath):
     print('Image path ' + imgPath)
-    #im2 = Image.open(imgPath).convert('RGB')
-    #im2 = np.array(im2)
     img = cv.imread(imgPath)
     return img
-    # print(im2)
-
-def prediction_result(prediction_list):
-    a_prediction_result = [0, 0, 0, 0]
-    for prediction in prediction_list:
-        if int(prediction) == 1:
-            a_prediction_result[0] += 1
-        elif int(prediction) == 2:
-            a_prediction_result[1] += 1
-        elif int(prediction) == 3:
-            a_prediction_result[2] += 1
-        elif int(prediction) == 4:
-            a_prediction_result[3] += 1
-    
-    print('Prediction Result')
-    print(a_prediction_result)
-
 
 """
     * Objetivo:     Validar dado de entrada alterando a escala de cinza

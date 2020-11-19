@@ -30,7 +30,7 @@ def telaInicial():
         [sg.Button('Zoom', size=elements_col_size, key="_op_zoomI", button_color=parameters.color_button_notselected) 
             #sg.Button('zoom out', size=zoom_buttons_size, key="_op_zoomO", button_color=parameters.color_button_notselected)
         ],
-        [sg.Output(size=(55, 12))],
+        #[sg.Output(size=(55, 12))],
         
         [sg.Exit()]
     ]
@@ -43,10 +43,6 @@ def telaInicial():
         event, values = window.read()
 
         if event == '_op_diretorio':
-            #imgPath = values['_op_diretorio']
-            #img = mpimg.imread(imgPath)
-            # plt.imshow(img)
-            # plt.show()
             imgPath = values[event]
 
             if imgPath != "":
@@ -58,7 +54,6 @@ def telaInicial():
             control.button_zoomIn = False
             control.button_zoomOut = False
 
-            # window['_op_zoomO'].update(button_color=parameters.color_button_notselected)
             window['_op_zoomI'].update(
                 button_color=parameters.color_button_notselected)
             if control.mark_image_rectangle == True:
