@@ -80,7 +80,9 @@ def train(dirPath):
     array_train = []
     array_classificate = []
     
-    haralick_features, haralick_label = get_haralick_arrays()
+    haralick_features, haralick_labels = get_haralick_arrays()
+    clf_svm.fit(haralick_features, haralick_labels)
+    
     #hu_features, hu_labels = get_hu_arrays()
 
     #train(haralick_features, haralick_label)
@@ -131,54 +133,6 @@ def get_img_features(img_array, label):
 
     return (train_features, train_labels)
 
-def train1(array_train, array_classificate):
-    print('\033[34m', "="*30, 'Algoritmo para treinar o classificador\033[m')
-
-    train_features = []
-    train_label = []
-    train_names = os.listdir(dirPath)
-    
-    for train_name in train_names:
-        cur_label = train_name
-        cur_path = dirPath + "/" + train_name
-        for file in glob.glob(cur_path + "/*.png"):
-            img = cv.imread(file)
-
-            gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-            gray = resample(gray)
-
-            features = np.zeros((4, 13))
-            i = 1
-            while i <= haralick_distance:
-                feature = get_haralick_features(gray, i)
-                features += feature
-                i = i*2
-
-            features_mean = features.mean(axis=0)
-            train_features.append(features_mean)
-            train_label.append(cur_label)
-
-    print('Training')
-    clf_svm.fit(train_features, train_label)
-
-def calculate(img):
-    #print('Algoritmo para calcular e exibir as caracteristicas')
-
-    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    gray = resample(gray)
-
-    features = np.zeros((4, 13))
-    while i <= haralick_distance:
-        feature = get_haralick_features(gray, i)
-        features += feature
-        i = i*2
-
-    features_predict = features.mean(axis=0)
-    
-    prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
-
-    return prediction
-
 def get_haralick_features(img, size):
     textures = mt.features.haralick(img, distance=size)
 
@@ -192,16 +146,42 @@ def resample(img):
 
     return img
 
+def classificate_25_images():
+    print('Algoritmo para classificar 25\% das images imagem/região')
+    expected_array = []
+    actual_array = []
 
-def classificate():
-    print('Algoritmo para classificar imagem/região')
+    for img in images_class1_classificate:
+        expected_array.append(1)
+        actual_array.append(classificate(img))
+    for img in images_class2_classificate:
+        expected_array.append(2)
+        actual_array.append(classificate(img))
+    for img in images_class3_classificate:
+        expected_array.append(3)
+        actual_array.append(classificate(img))
+    for img in images_class4_classificate:
+        expected_array.append(4)
+        actual_array.append(classificate(img))
 
+    return (expected_array, actual_array)
 
-"""
-    * Objetivo:     Gerar uma matriz a partir da imagem
-    * Argumentos:   Diretorio de localização da imagem
-    * Retorno:      Matriz gerada pela imagem
-"""
+def classificate(img):
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    gray = resample(gray)
+
+    features = np.zeros((4, 13))
+    i = 0
+    while i <= haralick_distance:
+        feature = get_haralick_features(gray, i)
+        features += feature
+        i = i*2
+
+    features_predict = features.mean(axis=0)
+    
+    prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
+
+    return prediction
 
 
 def generatinMatrix(imgPath):
@@ -240,6 +220,7 @@ def valid_gray_scale(grayScale):
     return valor
     
 def haralick_test_function():
+    classificate_25_images()
     train("D:\Maycon\Documentos\codes\python\imagens")
     #train("D:\Maycon\Documentos\codes\python\imagens")
 
@@ -254,7 +235,7 @@ def haralick_test_function():
         for image in images:
             if cont < 25:
                 img = cv.imread(path + '\\' + pa + '\\' + image)
-                prediction_list.append(calculate(img))
+                prediction_list.append(classificate(img))
                 cont += 1
 
 haralick_test_function()
