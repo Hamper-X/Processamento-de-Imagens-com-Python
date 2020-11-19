@@ -2,6 +2,8 @@ import os
 from PIL import Image
 import numpy as np
 from sklearn.svm import LinearSVC
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
 import cv2 as cv
 import glob
 import math
@@ -197,5 +199,28 @@ def haralick_test_function():
                 img = cv.imread(path + '\\' + pa + '\\' + image)
                 prediction_list.append(calculate(img))
                 cont += 1
+
+"""
+    * Objetivo:     
+            - Gerar matrix de confusão             
+            - Metricas de sensibilidade media 
+            - Especificidade Media
+    * Argumentos:   - Vetor de valores reais 
+                    - Vetor de valores preditos 
+    * Retorno: --//--  
+            - Print da matriz de confusão
+            - Print da sensibilidade média
+            - Print da especificidade média
+"""
+def get_confusion_matrix(real_values, predicts_classificator):
+    print("Matrix de confusão:\n",pd.crosstab(real_values, lg_model.predict(predicts_classificator),
+        rownames =['Correct class'], colnames =['Predict class'],
+        margins = True),"\n")
+
+    for values in real_values:
+        for val2 in predicts_classificator:
+            
+    
+
 
 haralick_test_function()
