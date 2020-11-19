@@ -128,3 +128,14 @@ def calculate_haralick():
 
     print(imgDefault)
     return algorithms.calculate(imgDefault)
+
+def get_img():
+    try:
+        global imgDefault
+        img = imgDefault
+        cv.destroyAllWindows()
+
+        return img
+    except NameError:
+        print('Imagem não está carregada')
+        return None

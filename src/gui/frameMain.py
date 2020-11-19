@@ -1,11 +1,10 @@
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import PySimpleGUI as sg
+from opencv import opencv
 
 import algorithms
 import configs
-
-from opencv import opencv
 import control
 import parameters
 
@@ -24,16 +23,15 @@ def telaInicial():
         [sg.Button('Cortar imagem', size=elements_col_size, key='_cortar_imagem', button_color=parameters.color_button_notselected)],
         [sg.Button('Resetar imagem', size=elements_col_size, key='_reset_image', button_color=parameters.color_button_notselected)],
         [sg.Button('Salvar imagem', size=elements_col_size, key='_save_image', button_color=parameters.color_button_notselected)],
-        [sg.FolderBrowse('Carregar imagens de treinamento', size=elements_col_size, key="_op_selecionar", enable_events = True, button_color=parameters.color_button_notselected)],
-        [sg.Button('Treinar classificador', size=elements_col_size, key="_op_treinar", button_color=parameters.color_button_notselected)],
+        [sg.FolderBrowse('Carregar imagens de treinamento do classificador', size=elements_col_size, key="_op_selecionar", enable_events = True, button_color=parameters.color_button_notselected)],
         [sg.Button('Calcular e exibir características', size=elements_col_size, key="_op_calcular", button_color=parameters.color_button_notselected)],
         [sg.Input('Gray Scale 1-32',key='_op_gray_scale'),sg.Button('Save', size=(8,0), key="_op_save_gray", button_color=parameters.color_button_notselected)],
         [sg.Button('Classificar imagem/regiao', size=elements_col_size, key="_op_classificar", button_color=parameters.color_button_notselected)],
         [sg.Button('Zoom', size=elements_col_size, key="_op_zoomI", button_color=parameters.color_button_notselected) 
             #sg.Button('zoom out', size=zoom_buttons_size, key="_op_zoomO", button_color=parameters.color_button_notselected)
         ],
-        #[sg.Output(size=(55, 12))],
-        [sg.Output(size=(54,12))],
+        [sg.Output(size=(55, 12))],
+        
         [sg.Exit()]
     ]
 
@@ -79,17 +77,15 @@ def telaInicial():
             opencv.salvar_imagem()
         elif event == '_op_selecionar':
             folder = values[event]  # Pegar diretorio das pastas
-            algorithms.get_images_train(folder)
-            algorithms.get_100_path(folder,True)
-        elif event == '_op_treinar' and folder != "":
-            algorithms.train()
+            algorithms.train(folder)
         elif event == '_op_calcular':
-            opencv.salvar_imagem()
-            opencv.calculate_haralick()
+            algorithms.classificate_25_images()
         elif event == '_op_classificar':
-            opencv.salvar_imagem()
-            algorithms.classificate()
+            img = opencv.get_img()
 
+            if img is not None:
+                prediction = algorithms.classificate(img)
+                print('Imagem classe ' + str(prediction) + ' BIRADS')
         elif event == '_op_save_gray':
             grayScale = values['_op_gray_scale']
             grayScale_verificad = algorithms.valid_gray_scale(grayScale)

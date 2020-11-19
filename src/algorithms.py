@@ -1,13 +1,13 @@
 import os
-from PIL import Image
+import glob
+import math
+
 import numpy as np
 import mahotas as mt
 from sklearn.svm import LinearSVC
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 import cv2 as cv
-import glob
-import math
 
 clf_svm = LinearSVC(random_state=9)
 
@@ -78,19 +78,17 @@ def append_images(images_class_array, directory_list, dir_path, quant):
 
 def train(dirPath):
     get_images_train(dirPath)
-
-    array_train = []
-    array_classificate = []
     
+    print('Trainando classificador')
     haralick_features, haralick_labels = get_haralick_arrays()
+    hu_features, hu_labels = get_hu_arrays()
     clf_svm.fit(haralick_features, haralick_labels)
+    # clf_svm.fit(hu_features, hu_labels)
     
     #hu_features, hu_labels = get_hu_arrays()
 
-    #train(haralick_features, haralick_label)
-    #train(hu_features, hu_labels)
-
-    pass
+    train(haralick_features, haralick_label)
+    train(hu_features, hu_labels)
 
 def get_haralick_arrays():
     train_features = []
@@ -113,6 +111,55 @@ def get_haralick_arrays():
     train_labels.extend(train4_labels)
 
     return (train_features, train_labels)
+
+def get_hu_arrays():
+    train_features = []
+    train_labels = []
+    
+    train1_features, train1_labels = get_hu_features(images_class1_train, "1")
+    train_features.extend(train1_features)
+    train_labels.extend(train1_labels)
+
+    train2_features, train2_labels = get_hu_features(images_class2_train, "2")
+    train_features.extend(train2_features)
+    train_labels.extend(train2_labels)
+
+    train3_features, train3_labels = get_hu_features(images_class3_train, "3")
+    train_features.extend(train3_features)
+    train_labels.extend(train3_labels)
+
+    train4_features, train4_labels = get_hu_features(images_class4_train, "4")
+    train_features.extend(train4_features)
+    train_labels.extend(train4_labels)
+
+    return (train_features, train_labels)
+
+def get_hu_features(img_array, label):
+    train_features = []
+    train_labels = []
+    
+    for img in img_array:
+        # Threshold image
+        _,img = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY)
+
+        # Calculate Moments
+        moment = cv2.moments(img)
+    
+        # Threshold image
+        _,img = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY)
+        
+        # Calculate Hu Moments
+        huMoments = cv2.HuMoments(moment)
+    
+        hu = []
+        for i in range(0, 7):
+            hu[i] = -1 * np.sign(hu[i]) * np.log10(np.abs(hu[i]))
+    
+        train_features.append(hu)
+        train_labels.append(label)
+
+    return (train_features, train_labels)
+
 
 def get_img_features(img_array, label):
     train_features = []
@@ -173,15 +220,19 @@ def classificate(img):
     gray = resample(gray)
 
     features = np.zeros((4, 13))
-    i = 0
+    i = 1
     while i <= haralick_distance:
         feature = get_haralick_features(gray, i)
         features += feature
         i = i*2
-
+    print('ops')
     features_predict = features.mean(axis=0)
-    
-    prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
+
+    prediction = 0
+    try: 
+        prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
+    except:
+        print('Classificador não está treinado')
 
     return prediction
 
@@ -222,7 +273,6 @@ def valid_gray_scale(grayScale):
     return valor
     
 def haralick_test_function():
-    classificate_25_images()
     train("D:\Maycon\Documentos\codes\python\imagens")
     #train("D:\Maycon\Documentos\codes\python\imagens")
 
