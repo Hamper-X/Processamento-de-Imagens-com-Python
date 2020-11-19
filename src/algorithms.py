@@ -211,6 +211,41 @@ def classificate_25_images():
 
     return (expected_array, actual_array)
 
+def classificate_25_images_confusion():
+    print('Algoritmo para classificar 25\% das images imagem/região para matrix de confusão')
+    expected_array_1 = []
+    expected_array_2 = []
+    expected_array_3 = []
+    expected_array_4 = []
+    actual_array_1 = []
+    actual_array_2 = []
+    actual_array_3 = []
+    actual_array_4 = []
+
+    for img in images_class1_classificate:
+        expected_array_1.append(1)
+        actual_array_1.append(classificate(img))
+    for img in images_class2_classificate:
+        expected_array_2.append(2)
+        actual_array_2.append(classificate(img))
+    for img in images_class3_classificate:
+        expected_array_3.append(3)
+        actual_array_3.append(classificate(img))
+    for img in images_class4_classificate:
+        expected_array_4.append(4)
+        actual_array_4.append(classificate(img))
+
+    get_confusion_matrix(1,expected_array_1,actual_array_1)
+    get_confusion_matrix(2,expected_array_2,actual_array_2)
+    get_confusion_matrix(3,expected_array_3,actual_array_3)
+    get_confusion_matrix(4,expected_array_4,actual_array_4)
+    
+
+    return (expected_array_1,expected_array_2,expected_array_3,expected_array_4, actual_array_1,actual_array_2,actual_array_3,actual_array_4)
+
+def makeConfusion():
+    classificate_25_images_confusion()
+
 def classificate(img):
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     gray = resample(gray)
@@ -279,10 +314,8 @@ def haralick_test_function():
             - Print da sensibilidade média
             - Print da especificidade média
 """
-def get_confusion_matrix(real_values, predicts_classificator):
-    print("Matrix de confusão:\n",pd.crosstab(real_values, lg_model.predict(predicts_classificator),
-        rownames =['Correct class'], colnames =['Predict class'],
-        margins = True),"\n")
+def get_confusion_matrix(classe,real_values, predicts_classificator):
+    print("Matrix de confusão da classe ",classe,":\n",confusion_matrix(real_values, predicts_classificator),"\n")
     sense = 0
     matrix = confusion_matrix(real_values, predicts_classificator)
     for i in range(0,matrix.shape(0)):

@@ -7,6 +7,7 @@ import algorithms
 import configs
 import control
 import parameters
+import time
 
 elements_col_size = (50, 0)
 zoom_buttons_size = (24, 0)
@@ -74,7 +75,11 @@ def telaInicial():
             folder = values[event]  # Pegar diretorio das pastas
             algorithms.train(folder)
         elif event == '_op_calcular':
+            inicio = time.time()
             algorithms.classificate_25_images()
+            fim = time.time()
+            print("Tempo de execução da classificação 25'%': ",fim - inicio)
+            algorithms.makeConfusion()
         elif event == '_op_classificar':
             img = opencv.get_img()
 
