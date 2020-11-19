@@ -1,6 +1,7 @@
 import os
 from PIL import Image
 import numpy as np
+import mahotas as mt
 from sklearn.svm import LinearSVC
 import cv2 as cv
 import glob
@@ -74,6 +75,63 @@ def append_images(images_class_array, directory_list, dir_path, quant):
             i += 1
 
 def train(dirPath):
+    get_images_train(dirPath)
+
+    array_train = []
+    array_classificate = []
+    
+    haralick_features, haralick_label = get_haralick_arrays()
+    #hu_features, hu_labels = get_hu_arrays()
+
+    #train(haralick_features, haralick_label)
+    #train(hu_features, hu_labels)
+
+    pass
+
+def get_haralick_arrays():
+    train_features = []
+    train_labels = []
+    
+    train1_features, train1_labels = get_img_features(images_class1_train, "1")
+    train_features.extend(train1_features)
+    train_labels.extend(train1_labels)
+
+    train2_features, train2_labels = get_img_features(images_class2_train, "2")
+    train_features.extend(train2_features)
+    train_labels.extend(train2_labels)
+
+    train3_features, train3_labels = get_img_features(images_class3_train, "3")
+    train_features.extend(train3_features)
+    train_labels.extend(train3_labels)
+
+    train4_features, train4_labels = get_img_features(images_class4_train, "4")
+    train_features.extend(train4_features)
+    train_labels.extend(train4_labels)
+
+    return (train_features, train_labels)
+
+def get_img_features(img_array, label):
+    train_features = []
+    train_labels = []
+    
+    for img in img_array:
+        gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        gray = resample(gray)
+
+        features = np.zeros((4, 13))
+        i = 1
+        while i <= haralick_distance:
+            feature = get_haralick_features(gray, i)
+            features += feature
+            i = i*2
+
+        features_mean = features.mean(axis=0)
+        train_features.append(features_mean)
+        train_labels.append(label)
+
+    return (train_features, train_labels)
+
+def train1(array_train, array_classificate):
     print('\033[34m', "="*30, 'Algoritmo para treinar o classificador\033[m')
 
     train_features = []
@@ -148,9 +206,10 @@ def classificate():
 
 def generatinMatrix(imgPath):
     print('Image path ' + imgPath)
-    im2 = Image.open(imgPath).convert('RGB')
-    im2 = np.array(im2)
-    return im2
+    #im2 = Image.open(imgPath).convert('RGB')
+    #im2 = np.array(im2)
+    img = cv.imread(imgPath)
+    return img
     # print(im2)
 
 def prediction_result(prediction_list):
@@ -181,7 +240,7 @@ def valid_gray_scale(grayScale):
     return valor
     
 def haralick_test_function():
-    get_images_train("D:\Maycon\Documentos\codes\python\imagens")
+    train("D:\Maycon\Documentos\codes\python\imagens")
     #train("D:\Maycon\Documentos\codes\python\imagens")
 
     print('Calculando resultado')
