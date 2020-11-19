@@ -301,5 +301,4 @@ def get_confusion_matrix(real_values, predicts_classificator):
     print("Especificidade = ", (soma), "\n") 
     
     
-haralick_test_function()
-
+#haralick_test_function()
