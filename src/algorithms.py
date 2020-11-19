@@ -217,9 +217,13 @@ def get_confusion_matrix(real_values, predicts_classificator):
         rownames =['Correct class'], colnames =['Predict class'],
         margins = True),"\n")
 
-    for values in real_values:
-        for val2 in predicts_classificator:
-            
+    sense = 0
+    soma = 0 
+    for values in 25:
+        if real_values[values]==predicts_classificator[values]:
+            sense += predicts_classificator[values]
+    print("Acuraricia/Sensibilidade = ", (sense/100), "\n")        
+
     
 
 
