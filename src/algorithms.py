@@ -256,15 +256,23 @@ def get_confusion_matrix(real_values, predicts_classificator):
     print("Matrix de confusão:\n",pd.crosstab(real_values, lg_model.predict(predicts_classificator),
         rownames =['Correct class'], colnames =['Predict class'],
         margins = True),"\n")
-
     sense = 0
+    matrix = confusion_matrix(real_values, predicts_classificator)
+    for i in range(0,matrix.shape(0)):
+        for j in range(0,matrix.shape(1)):
+            if i == j:
+                sense += matrix[i][j]/100
+    print("Acuraricia/Sensibilidade = ", (sense), "\n")        
     soma = 0 
-    for values in 25:
-        if real_values[values]==predicts_classificator[values]:
-            sense += predicts_classificator[values]
-    print("Acuraricia/Sensibilidade = ", (sense/100), "\n")        
-
+    for i in range(0,matrix.shape(0)):
+        for j in range(0,matrix.shape(1)):
+            if i!=j:
+                soma += matrix[i][j]/300
+            else:
+                break
+    soma = 1 - soma
+    print("Especificidade = ", (soma), "\n") 
     
-
-
+    
 haralick_test_function()
+
