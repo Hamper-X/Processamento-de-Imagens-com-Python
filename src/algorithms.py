@@ -1,11 +1,11 @@
 import os
-from PIL import Image
+import glob
+import math
+
 import numpy as np
 import mahotas as mt
 from sklearn.svm import LinearSVC
 import cv2 as cv
-import glob
-import math
 
 clf_svm = LinearSVC(random_state=9)
 
@@ -76,10 +76,8 @@ def append_images(images_class_array, directory_list, dir_path, quant):
 
 def train(dirPath):
     get_images_train(dirPath)
-
-    array_train = []
-    array_classificate = []
     
+    print('Trainando classificador')
     haralick_features, haralick_labels = get_haralick_arrays()
     clf_svm.fit(haralick_features, haralick_labels)
     
@@ -171,15 +169,19 @@ def classificate(img):
     gray = resample(gray)
 
     features = np.zeros((4, 13))
-    i = 0
+    i = 1
     while i <= haralick_distance:
         feature = get_haralick_features(gray, i)
         features += feature
         i = i*2
-
+    print('ops')
     features_predict = features.mean(axis=0)
-    
-    prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
+
+    prediction = 0
+    try: 
+        prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
+    except:
+        print('Classificador não está treinado')
 
     return prediction
 
@@ -220,7 +222,6 @@ def valid_gray_scale(grayScale):
     return valor
     
 def haralick_test_function():
-    classificate_25_images()
     train("D:\Maycon\Documentos\codes\python\imagens")
     #train("D:\Maycon\Documentos\codes\python\imagens")
 
@@ -238,4 +239,4 @@ def haralick_test_function():
                 prediction_list.append(classificate(img))
                 cont += 1
 
-haralick_test_function()
+#haralick_test_function()
