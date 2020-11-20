@@ -129,6 +129,7 @@ def calculate_haralick():
     print(imgDefault)
     return algorithms.calculate(imgDefault)
 
+
 def get_img():
     try:
         global imgDefault

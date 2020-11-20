@@ -10,6 +10,7 @@ import time
 elements_col_size = (50, 0)
 zoom_buttons_size = (24, 0)
 
+
 def telaInicial():
     sg.theme(configs.theme)  # please make your windows colorful
 
@@ -17,20 +18,29 @@ def telaInicial():
         [sg.Text('                                             | Menu |',
                  size=elements_col_size)],
         # Fazer um leitor que permitar pegar apenas imagem
-        [sg.FileBrowse('Buscar imagem', size=elements_col_size, key="_op_diretorio", enable_events=True, button_color=parameters.color_button_notselected)],
-        [sg.Button('Marcar região de interesse', size=elements_col_size, key="_op_marcar_regiao", button_color=parameters.color_button_notselected)],
-        [sg.Button('Cortar imagem', size=elements_col_size, key='_cortar_imagem', button_color=parameters.color_button_notselected)],
-        [sg.Button('Resetar imagem', size=elements_col_size, key='_reset_image', button_color=parameters.color_button_notselected)],
-        [sg.Button('Salvar imagem', size=elements_col_size, key='_save_image', button_color=parameters.color_button_notselected)],
-        [sg.FolderBrowse('Carregar imagens de treinamento do classificador', size=elements_col_size, key="_op_selecionar", enable_events = True, button_color=parameters.color_button_notselected)],
-        [sg.Button('Calcular e exibir características', size=elements_col_size, key="_op_calcular", button_color=parameters.color_button_notselected)],
-        [sg.Input('32',key='_op_gray_scale', size=(30,0)),sg.Button('Salvar escala de cinza', size=(22,0), key="_op_save_gray", button_color=parameters.color_button_notselected)],
-        [sg.Button('Classificar imagem/regiao', size=elements_col_size, key="_op_classificar", button_color=parameters.color_button_notselected)],
-        [sg.Button('Zoom', size=elements_col_size, key="_op_zoomI", button_color=parameters.color_button_notselected) 
+        [sg.FileBrowse('Buscar imagem', size=elements_col_size, key="_op_diretorio",
+                       enable_events=True, button_color=parameters.color_button_notselected)],
+        [sg.Button('Marcar região de interesse', size=elements_col_size,
+                   key="_op_marcar_regiao", button_color=parameters.color_button_notselected)],
+        [sg.Button('Cortar imagem', size=elements_col_size, key='_cortar_imagem',
+                   button_color=parameters.color_button_notselected)],
+        [sg.Button('Resetar imagem', size=elements_col_size, key='_reset_image',
+                   button_color=parameters.color_button_notselected)],
+        [sg.Button('Salvar imagem', size=elements_col_size, key='_save_image',
+                   button_color=parameters.color_button_notselected)],
+        [sg.FolderBrowse('Carregar imagens de treinamento do classificador', size=elements_col_size,
+                         key="_op_selecionar", enable_events=True, button_color=parameters.color_button_notselected)],
+        [sg.Button('Calcular e exibir características', size=elements_col_size,
+                   key="_op_calcular", button_color=parameters.color_button_notselected)],
+        [sg.Input('32', key='_op_gray_scale', size=(30, 0)), sg.Button('Salvar escala de cinza', size=(
+            22, 0), key="_op_save_gray", button_color=parameters.color_button_notselected)],
+        [sg.Button('Classificar imagem/regiao', size=elements_col_size,
+                   key="_op_classificar", button_color=parameters.color_button_notselected)],
+        [sg.Button('Zoom', size=elements_col_size, key="_op_zoomI", button_color=parameters.color_button_notselected)
             #sg.Button('zoom out', size=zoom_buttons_size, key="_op_zoomO", button_color=parameters.color_button_notselected)
-        ],
+         ],
         #[sg.Output(size=(55, 12))],
-        
+
         [sg.Exit()]
     ]
 
@@ -74,19 +84,20 @@ def telaInicial():
             inicio = time.time()
             algorithms.train(folder)
             fim = time.time()
-            print("Tempo de treinamento: ",fim - inicio, "segundos")
+            print("Tempo de treinamento: ", fim - inicio, "segundos")
         elif event == '_op_calcular':
             inicio = time.time()
-            algorithms.classificate_25_images()
-            fim = time.time()
-            print("Tempo de execução da classificação 25'%': ",fim - inicio, "segundos")
             algorithms.makeConfusion()
+            fim = time.time()
+            print("Tempo de execução da classificação 25'%': ",
+                  fim - inicio, "segundos")
         elif event == '_op_classificar':
             img = opencv.get_img()
 
             if img is not None:
                 prediction = algorithms.classificate(img)
-                print('Imagem classe ' + str(prediction) + ' BIRADS')
+                if prediction != 0:
+                    print('Imagem classe ' + str(prediction) + ' BIRADS')
         elif event == '_op_save_gray':
             grayScale = values['_op_gray_scale']
             algorithms.set_gray_scale(grayScale)
