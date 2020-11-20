@@ -211,42 +211,26 @@ def classificate_25_images():
         expected_array.append(4)
         actual_array.append(classificate(img))
 
+    # print("Expected: ",expected_array)
+    # print("Actual: ",actual_array)
     return (expected_array, actual_array)
 
-def classificate_25_images_confusion():
-    print('Algoritmo para classificar 25\% das images imagem/região para matrix de confusão')
-    expected_array_1 = []
-    expected_array_2 = []
-    expected_array_3 = []
-    expected_array_4 = []
-    actual_array_1 = []
-    actual_array_2 = []
-    actual_array_3 = []
-    actual_array_4 = []
-
-    for img in images_class1_classificate:
-        expected_array_1.append(1)
-        actual_array_1.append(classificate(img))
-    for img in images_class2_classificate:
-        expected_array_2.append(2)
-        actual_array_2.append(classificate(img))
-    for img in images_class3_classificate:
-        expected_array_3.append(3)
-        actual_array_3.append(classificate(img))
-    for img in images_class4_classificate:
-        expected_array_4.append(4)
-        actual_array_4.append(classificate(img))
-
-    get_confusion_matrix(1,expected_array_1,actual_array_1)
-    get_confusion_matrix(2,expected_array_2,actual_array_2)
-    get_confusion_matrix(3,expected_array_3,actual_array_3)
-    get_confusion_matrix(4,expected_array_4,actual_array_4)
-    
-
-    return (expected_array_1,expected_array_2,expected_array_3,expected_array_4, actual_array_1,actual_array_2,actual_array_3,actual_array_4)
-
 def makeConfusion():
-    classificate_25_images_confusion()
+    expected, actual = classificate_25_images()
+    expected_splited = list(chunks(expected, 4))
+    actual_splited = list(chunks(actual, 4))
+    get_confusion_matrix(1,expected_splited[0],actual_splited[0])
+    get_confusion_matrix(2,expected_splited[1],actual_splited[1])
+    get_confusion_matrix(3,expected_splited[2],actual_splited[2])
+    get_confusion_matrix(4,expected_splited[3],actual_splited[3])
+
+def chunks(lista, n):
+    inicio = 0
+    for i in range(n):
+        final = inicio + len(lista[i::n])
+        yield lista[inicio:final]
+        inicio = final
+
 
 def classificate(img):
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -264,6 +248,7 @@ def classificate(img):
     prediction = 0
     try: 
         prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
+        return int(prediction)
     except:
         print('Classificador não está treinado')
 
@@ -327,19 +312,29 @@ def get_confusion_matrix(classe,real_values, predicts_classificator):
     print("Matrix de confusão da classe ",classe,":\n",confusion_matrix(real_values, predicts_classificator),"\n")
     sense = 0
     matrix = confusion_matrix(real_values, predicts_classificator)
-    for i in range(0,matrix.shape(0)):
-        for j in range(0,matrix.shape(1)):
-            if i == j:
-                sense += matrix[i][j]/100
-    print("Acuraricia/Sensibilidade = ", (sense), "\n")        
+    a=0
+    b=0
+    for i in matrix:
+        for j in i:
+            if a == b:
+                sense += matrix[a][b]/100
+                b+=1
+    a+=1
+    b=0
+    print("Acuraricia/Sensibilidade = ", (sense), "\n")    
+
     soma = 0 
-    for i in range(0,matrix.shape(0)):
-        for j in range(0,matrix.shape(1)):
-            if i!=j:
-                soma += matrix[i][j]/300
+    a=0
+    b=0
+    for i in matrix:
+        for j in i:
+            if a!=b:
+                soma += matrix[a][b]/300
             else:
                 break
     soma = 1 - soma
+    a+=1
+    b=0
     print("Especificidade = ", (soma), "\n") 
     
     
