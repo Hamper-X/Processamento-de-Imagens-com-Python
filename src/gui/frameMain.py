@@ -1,5 +1,3 @@
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
 import PySimpleGUI as sg
 from opencv import opencv
 

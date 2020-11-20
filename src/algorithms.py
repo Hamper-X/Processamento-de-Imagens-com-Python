@@ -1,14 +1,14 @@
 import os
-import glob
 import math
-
 from random import randint
+
+import cv2 as cv
 import numpy as np
 import mahotas as mt
 from sklearn.svm import LinearSVC
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
-import cv2 as cv
+
 
 clf_svm = LinearSVC(random_state=9)
 
@@ -211,6 +211,12 @@ def classificate_25_images():
         expected_array.append(4)
         actual_array.append(classificate(img))
 
+    prediction_array = [0,0,0,0]
+    for r in range(0, len(expected_array)):
+        if expected_array[r] == actual_array[r]:
+            prediction_array[expected_array[r]] += 1
+    print('Resultado classificação')
+    print(prediction_array)
     return (expected_array, actual_array)
 
 def classificate_25_images_confusion():
@@ -266,7 +272,7 @@ def classificate(img):
         prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
     except:
         print('Classificador não está treinado')
-
+    print(prediction)
     return prediction
 
 
