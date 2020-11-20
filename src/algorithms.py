@@ -184,6 +184,8 @@ def train(dirPath):
     # DEBUG
     # hu_features, hu_labels = get_hu_arrays()
     # clf_svm.fit(hu_features, hu_labels)
+    
+    print('Treinamento finalizado')
 
 
 def resample(img):
@@ -292,7 +294,7 @@ def haralick_test_function():
 
     print('Calculando resultado')
     
-    path = "D:\Maycon\Documentos\codes\python\imagens" #win
+    path = "D:\Maycon\Documentos\codes\python\imagens"
     #path = "/home/carrocinha/Faculdade/6-periodo/PI/trab/imagens" #lnx
     paths = os.listdir(path)
 
