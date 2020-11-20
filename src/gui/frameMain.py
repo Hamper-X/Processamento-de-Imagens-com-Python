@@ -39,7 +39,7 @@ def telaInicial():
         [sg.Button('Zoom', size=elements_col_size, key="_op_zoomI", button_color=parameters.color_button_notselected)
             #sg.Button('zoom out', size=zoom_buttons_size, key="_op_zoomO", button_color=parameters.color_button_notselected)
          ],
-        #[sg.Output(size=(55, 12))],
+        [sg.Output(size=(55, 12))],
 
         [sg.Exit()]
     ]
@@ -101,7 +101,6 @@ def telaInicial():
         elif event == '_op_save_gray':
             grayScale = values['_op_gray_scale']
             algorithms.set_gray_scale(grayScale)
-
         elif event == '_op_zoomI':
             window['_op_marcar_regiao'].update(
                 button_color=parameters.color_button_notselected)
