@@ -167,13 +167,8 @@ def get_img_features(img_array, label):
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         gray = resample(gray)
 
-        features = np.zeros((4, 13))
-        i = 1
-        while i <= haralick_distance:
-            feature = get_haralick_features(gray, i)
-            features += feature
-            i = i*2
-
+        features = get_haralick_matrix(gray)
+   
         features_mean = features.mean(axis=0)
         train_features.append(features_mean)
         train_labels.append(label)
@@ -258,21 +253,17 @@ def classificate(img):
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     gray = resample(gray)
 
-    features = np.zeros((4, 13))
-    i = 1
-    while i <= haralick_distance:
-        feature = get_haralick_features(gray, i)
-        features += feature
-        i = i*2
+    features = get_haralick_matrix(gray)
     
     features_predict = features.mean(axis=0)
 
     prediction = 0
     try: 
         prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
+        return int(prediction)
     except:
         print('Classificador não está treinado')
-    print(prediction)
+
     return prediction
 
 
@@ -280,6 +271,16 @@ def generatinMatrix(imgPath):
     print('Image path ' + imgPath)
     img = cv.imread(imgPath)
     return img
+
+def get_haralick_matrix(gray_img):
+    features = np.zeros((4, 13))
+    i = 1
+    while i <= haralick_distance:
+        feature = get_haralick_features(gray_img, i)
+        features += feature
+        i = i*2
+
+    return features
 
 """
     * Objetivo:     Validar dado de entrada alterando a escala de cinza
@@ -301,7 +302,7 @@ def set_gray_scale(grayScale):
     
 def haralick_test_function():
     train("D:\Maycon\Documentos\codes\python\imagens")
-    #train("D:\Maycon\Documentos\codes\python\imagens")
+    classificate_25_images()
 
     print('Calculando resultado')
     path = "D:\Maycon\Documentos\codes\python\imagens"
