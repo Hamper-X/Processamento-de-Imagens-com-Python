@@ -13,7 +13,7 @@ from sklearn.metrics import accuracy_score
 clf_svm = LinearSVC(random_state=9)
 
 #todo: calcular o valor da reamostragem e usar na função resample()
-gray_scale_resample = 33
+gray_scale_resample = 32
 
 haralick_distance = 16
 
@@ -31,8 +31,6 @@ images_class4_classificate = []
     * Argumentos:   Diretorio da pasta com as imagens
     * Retorno:      Booleano mostrando se deu certo ou não.
 """
-
-
 def get_images_train(dirPath):
     dir_01 = dirPath + '/1/'
     dir_02 = dirPath + '/2/'
@@ -73,18 +71,6 @@ def append_images(images_class_array, directory_list, dir_path, quant):
             images_class_array.append(generatinMatrix(dir_path+img_name))
             directory_list.remove(img_name)
             i += 1
-
-def train(dirPath):
-    get_images_train(dirPath)
-    
-    print('Treinando classificador')
-    haralick_features, haralick_labels = get_haralick_arrays()
-    clf_svm.fit(haralick_features, haralick_labels)
-    
-    #hu_features, hu_labels = get_hu_arrays()
-    #clf_svm.fit(hu_features, hu_labels)
-
-    print('Treinamento finalizado')
 
 def get_haralick_arrays():
     print('Calculando matrizes de co-ocorrência de haralick')
@@ -137,25 +123,28 @@ def get_hu_features(img_array, label):
     train_labels = []
     
     for img in img_array:
-        # Threshold image
-        _,img = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY)
 
-        # Calculate Moments
-        moment = cv2.moments(img)
-    
+        img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        img = resample(img)
+        
         # Threshold image
-        _,img = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY)
+        _,img = cv.threshold(img, 128, 255, cv.THRESH_BINARY)
+        
+        # Calculate Moments
+        moment = cv.moments(img)
         
         # Calculate Hu Moments
-        huMoments = cv2.HuMoments(moment)
-    
-        hu = []
+        hu = cv.HuMoments(moment)
         for i in range(0, 7):
-            hu[i] = -1 * np.sign(hu[i]) * np.log10(np.abs(hu[i]))
-    
+            if hu[i] != 0:
+                hu[i] = -1 * np.sign(hu[i]) * np.log10(np.abs(hu[i]))
+        
+        # transformar Hu em um vetor unico        
+        hu = hu.reshape((1, 7)).tolist()[0]
+        
         train_features.append(hu)
         train_labels.append(label)
-
+    
     return (train_features, train_labels)
 
 
@@ -180,11 +169,24 @@ def get_haralick_features(img, size):
 
     return textures
 
+def train(dirPath):
+    get_images_train(dirPath)
+    
+    print('Treinando classificador')
+    haralick_features, haralick_labels = get_haralick_arrays()
+    clf_svm.fit(haralick_features, haralick_labels)
+    
+    # DEBUG
+    # hu_features, hu_labels = get_hu_arrays()
+    # clf_svm.fit(hu_features, hu_labels)
+    
+    print('Treinamento finalizado')
+
 
 def resample(img):
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
-            img[i][j] = math.ceil(img[i][j]%gray_scale_resample)
+            img[i][j] = math.ceil(img[i][j]/8)
 
     return img
 
@@ -287,34 +289,34 @@ def get_haralick_matrix(gray_img):
     * Argumentos:   Escala de cinza fornecida
     * Retorno:      Valor da escala de cinza verificada/default
 """
-def set_gray_scale(grayScale):
+def valid_gray_scale(grayScale):
+    valor = 32
     if grayScale.isdigit():
-        grayScale = int(grayScale)
-        if grayScale > 0 and grayScale <= 32:
-            gray_scale_resample = grayScale + 1
-            print('Escala de cinza da reamostragem alterada para ' + str(grayScale))
-        else:
-            print('Informe um valor maior que 0 e menor ou igual a 32')
-    else:
-        print('Valor invalido')
-
-    return grayScale
+        valor = grayScale
+    return valor
     
 def haralick_test_function():
     train("D:\Maycon\Documentos\codes\python\imagens")
     classificate_25_images()
+    #train("/home/carrocinha/Faculdade/6-periodo/PI/trab/imagens") #lnx
 
     print('Calculando resultado')
+    
     path = "D:\Maycon\Documentos\codes\python\imagens"
+    #path = "/home/carrocinha/Faculdade/6-periodo/PI/trab/imagens" #lnx
     paths = os.listdir(path)
 
     for pa in paths:
-        images = os.listdir(path + '\\' + pa)
+        images = os.listdir(path + '\\' + pa) # win
+        # images = os.listdir(path + '/' + pa) # lnx
         cont = 0
         prediction_list = []
         for image in images:
             if cont < 25:
-                img = cv.imread(path + '\\' + pa + '\\' + image)
+                img = cv.imread(path + '/' + pa + '\\' + image) # win
+                # img = cv.imread(path + '/' + pa + '/' + image) # lnx
+                # img = cv.imread(path + '/' + pa + '/' + image, cv.IMREAD_GRAYSCALE) # lnx
+                
                 prediction_list.append(classificate(img))
                 cont += 1
 
@@ -350,4 +352,4 @@ def get_confusion_matrix(classe,real_values, predicts_classificator):
     print("Especificidade = ", (soma), "\n") 
     
     
-#haralick_test_function()
+haralick_test_function()

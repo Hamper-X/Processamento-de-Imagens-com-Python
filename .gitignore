@@ -3,6 +3,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
 images/
+imagens/
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
