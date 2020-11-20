@@ -13,7 +13,7 @@ import cv2 as cv
 clf_svm = LinearSVC(random_state=9)
 
 #todo: calcular o valor da reamostragem e usar na função resample()
-gray_scale_resample = 32
+gray_scale_resample = 33
 
 haralick_distance = 16
 
@@ -83,6 +83,8 @@ def train(dirPath):
     
     #hu_features, hu_labels = get_hu_arrays()
     #clf_svm.fit(hu_features, hu_labels)
+
+    print('Treinamento finalizado')
 
 def get_haralick_arrays():
     print('Calculando matrizes de co-ocorrência de haralick')
@@ -187,7 +189,7 @@ def get_haralick_features(img, size):
 def resample(img):
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
-            img[i][j] = math.ceil(img[i][j]/8)
+            img[i][j] = math.ceil(img[i][j]%gray_scale_resample)
 
     return img
 
@@ -256,7 +258,7 @@ def classificate(img):
         feature = get_haralick_features(gray, i)
         features += feature
         i = i*2
-    print('ops')
+    
     features_predict = features.mean(axis=0)
 
     prediction = 0
@@ -278,11 +280,18 @@ def generatinMatrix(imgPath):
     * Argumentos:   Escala de cinza fornecida
     * Retorno:      Valor da escala de cinza verificada/default
 """
-def valid_gray_scale(grayScale):
-    valor = 32
+def set_gray_scale(grayScale):
     if grayScale.isdigit():
-        valor = grayScale
-    return valor
+        grayScale = int(grayScale)
+        if grayScale > 0 and grayScale <= 32:
+            gray_scale_resample = grayScale + 1
+            print('Escala de cinza da reamostragem alterada para ' + str(grayScale))
+        else:
+            print('Informe um valor maior que 0 e menor ou igual a 32')
+    else:
+        print('Valor invalido')
+
+    return grayScale
     
 def haralick_test_function():
     train("D:\Maycon\Documentos\codes\python\imagens")
