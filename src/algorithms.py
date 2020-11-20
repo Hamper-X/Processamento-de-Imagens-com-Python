@@ -31,8 +31,6 @@ images_class4_classificate = []
     * Argumentos:   Diretorio da pasta com as imagens
     * Retorno:      Booleano mostrando se deu certo ou não.
 """
-
-
 def get_images_train(dirPath):
     dir_01 = dirPath + '/1/'
     dir_02 = dirPath + '/2/'
@@ -76,6 +74,35 @@ def append_images(images_class_array, directory_list, dir_path, quant):
             i += 1
 
 
+def generatinMatrix(imgPath):
+    print('Image path ' + imgPath)
+    img = cv.imread(imgPath)
+    return img
+
+
+def set_gray_scale(grayScale):
+    if grayScale.isdigit():
+        grayScale = int(grayScale)
+        if grayScale > 0 and grayScale <= 32:
+            gray_scale_resample = grayScale + 1
+            print('Escala de cinza da reamostragem alterada para ' + str(grayScale))
+        else:
+            print('Informe um valor maior que 0 e menor ou igual a 32')
+    else:
+        print('Valor invalido')
+
+    return grayScale
+
+
+def resample(img):
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            img[i][j] = math.ceil(img[i][j] % 8)
+
+    return img
+
+
+############################# HARALICK #############################
 def get_haralick_arrays():
     print('Calculando matrizes de co-ocorrência de haralick')
     train_features = []
@@ -96,60 +123,6 @@ def get_haralick_arrays():
     train4_features, train4_labels = get_img_features(images_class4_train, "4")
     train_features.extend(train4_features)
     train_labels.extend(train4_labels)
-
-    return (train_features, train_labels)
-
-
-def get_hu_arrays():
-    print('Calculando momentos invariantes de Hu')
-    train_features = []
-    train_labels = []
-
-    train1_features, train1_labels = get_hu_features(images_class1_train, "1")
-    train_features.extend(train1_features)
-    train_labels.extend(train1_labels)
-
-    train2_features, train2_labels = get_hu_features(images_class2_train, "2")
-    train_features.extend(train2_features)
-    train_labels.extend(train2_labels)
-
-    train3_features, train3_labels = get_hu_features(images_class3_train, "3")
-    train_features.extend(train3_features)
-    train_labels.extend(train3_labels)
-
-    train4_features, train4_labels = get_hu_features(images_class4_train, "4")
-    train_features.extend(train4_features)
-    train_labels.extend(train4_labels)
-
-    return (train_features, train_labels)
-
-
-def get_hu_features(img_array, label):
-    train_features = []
-    train_labels = []
-
-    for img in img_array:
-
-        img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-        img = resample(img)
-
-        # Threshold image
-        _, img = cv.threshold(img, 128, 255, cv.THRESH_BINARY)
-
-        # Calculate Moments
-        moment = cv.moments(img)
-
-        # Calculate Hu Moments
-        hu = cv.HuMoments(moment)
-        for i in range(0, 7):
-            if hu[i] != 0:
-                hu[i] = -1 * np.sign(hu[i]) * np.log10(np.abs(hu[i]))
-
-        # transformar Hu em um vetor unico
-        hu = hu.reshape((1, 7)).tolist()[0]
-
-        train_features.append(hu)
-        train_labels.append(label)
 
     return (train_features, train_labels)
 
@@ -177,91 +150,6 @@ def get_haralick_features(img, size):
     return textures
 
 
-def train(dirPath):
-    get_images_train(dirPath)
-
-    print('Treinando classificador')
-    haralick_features, haralick_labels = get_haralick_arrays()
-    clf_svm.fit(haralick_features, haralick_labels)
-
-    # DEBUG
-    # hu_features, hu_labels = get_hu_arrays()
-    # clf_svm.fit(hu_features, hu_labels)
-
-    print('Treinamento finalizado')
-
-
-def resample(img):
-    for i in range(img.shape[0]):
-        for j in range(img.shape[1]):
-            img[i][j] = math.ceil(img[i][j] % 8)
-
-    return img
-
-
-def classificate_25_images():
-    print('Algoritmo para classificar 25\% das images imagem/região')
-    expected_array = []
-    actual_array = []
-
-    for img in images_class1_classificate:
-        expected_array.append(1)
-        actual_array.append(classificate(img))
-    for img in images_class2_classificate:
-        expected_array.append(2)
-        actual_array.append(classificate(img))
-    for img in images_class3_classificate:
-        expected_array.append(3)
-        actual_array.append(classificate(img))
-    for img in images_class4_classificate:
-        expected_array.append(4)
-        actual_array.append(classificate(img))
-
-    return (expected_array, actual_array)
-
-
-def makeConfusion():
-    expected, actual = classificate_25_images()
-    expected_splited = list(chunks(expected, 4))
-    actual_splited = list(chunks(actual, 4))
-    get_confusion_matrix(1, expected_splited[0], actual_splited[0])
-    get_confusion_matrix(2, expected_splited[1], actual_splited[1])
-    get_confusion_matrix(3, expected_splited[2], actual_splited[2])
-    get_confusion_matrix(4, expected_splited[3], actual_splited[3])
-
-
-def chunks(lista, n):
-    inicio = 0
-    for i in range(n):
-        final = inicio + len(lista[i::n])
-        yield lista[inicio:final]
-        inicio = final
-
-
-def classificate(img):
-    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    gray = resample(gray)
-
-    features = get_haralick_matrix(gray)
-
-    features_predict = features.mean(axis=0)
-
-    prediction = 0
-    try:
-        prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
-        return int(prediction)
-    except:
-        print('Classificador não está treinado')
-
-    return prediction
-
-
-def generatinMatrix(imgPath):
-    print('Image path ' + imgPath)
-    img = cv.imread(imgPath)
-    return img
-
-
 def get_haralick_matrix(gray_img):
     features = np.zeros((4, 13))
     i = 1
@@ -273,46 +161,70 @@ def get_haralick_matrix(gray_img):
     return features
 
 
-def set_gray_scale(grayScale):
-    if grayScale.isdigit():
-        grayScale = int(grayScale)
-        if grayScale > 0 and grayScale <= 32:
-            gray_scale_resample = grayScale + 1
-            print('Escala de cinza da reamostragem alterada para ' + str(grayScale))
-        else:
-            print('Informe um valor maior que 0 e menor ou igual a 32')
-    else:
-        print('Valor invalido')
+############################# HU #############################
+def get_hu_arrays():
+    print('Calculando momentos invariantes de Hu')
+    train_features = []
+    train_labels = []
 
-    return grayScale
+    train1_features, train1_labels = get_hu_features(images_class1_train, "1")
+    train_features.extend(train1_features)
+    train_labels.extend(train1_labels)
 
+    train2_features, train2_labels = get_hu_features(images_class2_train, "2")
+    train_features.extend(train2_features)
+    train_labels.extend(train2_labels)
 
-def haralick_test_function():
-    train("D:\Maycon\Documentos\codes\python\imagens")
-    classificate_25_images()
-    # train("/home/carrocinha/Faculdade/6-periodo/PI/trab/imagens") #lnx
+    train3_features, train3_labels = get_hu_features(images_class3_train, "3")
+    train_features.extend(train3_features)
+    train_labels.extend(train3_labels)
 
-    print('Calculando resultado')
+    train4_features, train4_labels = get_hu_features(images_class4_train, "4")
+    train_features.extend(train4_features)
+    train_labels.extend(train4_labels)
 
-    path = "D:\Maycon\Documentos\codes\python\imagens"
-    # path = "/home/carrocinha/Faculdade/6-periodo/PI/trab/imagens" #lnx
-    paths = os.listdir(path)
-
-    for pa in paths:
-        images = os.listdir(path + '\\' + pa)  # win
-        # images = os.listdir(path + '/' + pa) # lnx
-        cont = 0
-        prediction_list = []
-        for image in images:
-            if cont < 25:
-                img = cv.imread(path + '/' + pa + '\\' + image)  # win
-                # img = cv.imread(path + '/' + pa + '/' + image) # lnx
-                # img = cv.imread(path + '/' + pa + '/' + image, cv.IMREAD_GRAYSCALE) # lnx
-
-                prediction_list.append(classificate(img))
-                cont += 1
+    return (train_features, train_labels)
 
 
+def hu_moments(img):
+    # Threshold image
+    # _, img = cv.threshold(img, 128, 255, cv.THRESH_BINARY)
+
+    # Calculate Moments
+    moment = cv.moments(img)
+
+    # Calculate Hu Moments
+    hu = cv.HuMoments(moment)
+    for i in range(0, 7):
+        if hu[i] != 0:
+            hu[i] = -1 * np.sign(hu[i]) * np.log10(np.abs(hu[i]))
+
+    # transformar Hu em um vetor unico
+    hu = hu.reshape((1, 7)).tolist()[0]
+
+    print("guei d+")
+    print(hu)
+    
+    return hu
+
+
+def get_hu_features(img_array, label):
+    train_features = []
+    train_labels = []
+
+    for img in img_array:
+        img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        img = resample(img)
+
+        hu = hu_moments(img)
+
+        train_features.append(hu)
+        train_labels.append(label)
+
+    return (train_features, train_labels)
+
+
+############################# CONFUSION MATRIX #############################
 """
     * Objetivo:     
             - Gerar matrix de confusão             
@@ -325,8 +237,6 @@ def haralick_test_function():
             - Print da sensibilidade média
             - Print da especificidade média
 """
-
-
 def get_confusion_matrix(classe, real_values, predicts_classificator):
     print("Matrix de confusão da classe ", classe, ":\n",
           confusion_matrix(real_values, predicts_classificator), "\n")
@@ -358,4 +268,136 @@ def get_confusion_matrix(classe, real_values, predicts_classificator):
     print("Especificidade = ", (soma), "\n")
 
 
-# haralick_test_function()
+def makeConfusion():
+    expected, actual = classificate_25_images()
+    expected_splited = list(chunks(expected, 4))
+    actual_splited = list(chunks(actual, 4))
+    get_confusion_matrix(1, expected_splited[0], actual_splited[0])
+    get_confusion_matrix(2, expected_splited[1], actual_splited[1])
+    get_confusion_matrix(3, expected_splited[2], actual_splited[2])
+    get_confusion_matrix(4, expected_splited[3], actual_splited[3])
+
+
+def chunks(lista, n):
+    inicio = 0
+    for i in range(n):
+        final = inicio + len(lista[i::n])
+        yield lista[inicio:final]
+        inicio = final
+
+
+############################# TRAIN AND CLASSIFICATE #############################
+def train(dirPath):
+    get_images_train(dirPath)
+
+    print('Treinando classificador')
+    # haralick_features, haralick_labels = get_haralick_arrays()
+    # clf_svm.fit(haralick_features, haralick_labels)
+
+    # DEBUG
+    hu_features, hu_labels = get_hu_arrays()
+    clf_svm.fit(hu_features, hu_labels)
+
+    print('Treinamento finalizado')
+
+
+def classificate_25_images():
+    print('Algoritmo para classificar 25\% das images imagem/região')
+    expected_array = []
+    actual_array = []
+
+    for img in images_class1_classificate:
+        expected_array.append(1)
+        actual_array.append(classificate(img))
+    for img in images_class2_classificate:
+        expected_array.append(2)
+        actual_array.append(classificate(img))
+    for img in images_class3_classificate:
+        expected_array.append(3)
+        actual_array.append(classificate(img))
+    for img in images_class4_classificate:
+        expected_array.append(4)
+        actual_array.append(classificate(img))
+
+    return (expected_array, actual_array)
+
+
+def classificate(img):
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    gray = resample(gray)
+
+    features = get_haralick_matrix(gray)
+
+    features_predict = features.mean(axis=0)
+
+    prediction = 0
+    try:
+        prediction = clf_svm.predict(features_predict.reshape(1, -1))[0]
+        return int(prediction)
+    except:
+        print('Classificador não está treinado')
+
+    return prediction
+
+
+############################# TESTS #############################
+
+def haralick_test_function():
+    # train("D:\Maycon\Documentos\codes\python\imagens")
+    # train("/home/carrocinha/Faculdade/6-periodo/PI/trab/imagens") #lnx
+    train("C:\\Users\\Felipe\\Desktop\\git\\imagens")
+    classificate_25_images()
+
+    print('Calculando resultado')
+
+    # path = "/home/carrocinha/Faculdade/6-periodo/PI/trab/imagens" #lnx
+    # path = "D:\Maycon\Documentos\codes\python\imagens"
+    path = "C:\\Users\\Felipe\\Desktop\\git\\imagens"
+    
+    paths = os.listdir(path)
+
+    for pa in paths:
+        images = os.listdir(path + '\\' + pa)  # win
+        # images = os.listdir(path + '/' + pa) # lnx
+        cont = 0
+        prediction_list = []
+        for image in images:
+            if cont < 25:
+                img = cv.imread(path + '/' + pa + '\\' + image)  # win
+                # img = cv.imread(path + '/' + pa + '/' + image) # lnx
+                # img = cv.imread(path + '/' + pa + '/' + image, cv.IMREAD_GRAYSCALE) # lnx
+
+                prediction_list.append(classificate(img))
+                cont += 1
+
+# def hu_test_function():
+#     # train("D:\Maycon\Documentos\codes\python\imagens")
+#     # train("/home/carrocinha/Faculdade/6-periodo/PI/trab/imagens") #lnx
+#     train("C:\\Users\\Felipe\\Desktop\\git\\imagens")
+#     classificate_25_images()
+
+#     print('Calculando resultado')
+
+#     # path = "/home/carrocinha/Faculdade/6-periodo/PI/trab/imagens" #lnx
+#     # path = "D:\Maycon\Documentos\codes\python\imagens"
+#     path = "C:\\Users\\Felipe\\Desktop\\git\\imagens"
+    
+#     paths = os.listdir(path)
+
+#     for pa in paths:
+#         images = os.listdir(path + '\\' + pa)  # win
+#         # images = os.listdir(path + '/' + pa) # lnx
+#         cont = 0
+#         prediction_list = []
+#         for image in images:
+#             if cont < 25:
+#                 img = cv.imread(path + '/' + pa + '\\' + image)  # win
+#                 # img = cv.imread(path + '/' + pa + '/' + image) # lnx
+#                 # img = cv.imread(path + '/' + pa + '/' + image, cv.IMREAD_GRAYSCALE) # lnx
+
+#                 prediction_list.append(classificate(img))
+#                 cont += 1
+
+
+haralick_test_function()
+# hu_test_function()
