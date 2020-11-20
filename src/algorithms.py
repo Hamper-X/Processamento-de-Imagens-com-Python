@@ -217,18 +217,23 @@ def classificate_25_images():
         expected_array.append(4)
         actual_array.append(classificate(img))
 
+    print("Expected = ",expected_array)
+    print("Actual = ",actual_array)
+
     return (expected_array, actual_array)
 
 
 def makeConfusion():
     expected, actual = classificate_25_images()
+    get_confusion_matrix(expected,actual)
+    '''
     expected_splited = list(chunks(expected, 4))
     actual_splited = list(chunks(actual, 4))
     get_confusion_matrix(1, expected_splited[0], actual_splited[0])
     get_confusion_matrix(2, expected_splited[1], actual_splited[1])
     get_confusion_matrix(3, expected_splited[2], actual_splited[2])
     get_confusion_matrix(4, expected_splited[3], actual_splited[3])
-
+    '''
 
 def chunks(lista, n):
     inicio = 0
@@ -327,9 +332,8 @@ def haralick_test_function():
 """
 
 
-def get_confusion_matrix(classe, real_values, predicts_classificator):
-    print("Matrix de confusão da classe ", classe, ":\n",
-          confusion_matrix(real_values, predicts_classificator), "\n")
+def get_confusion_matrix(real_values, predicts_classificator):
+    print("Matrix de confusão da classe 1,2,3 e 4:\n", confusion_matrix(real_values, predicts_classificator), "\n")
     sense = 0
     matrix = confusion_matrix(real_values, predicts_classificator)
     a = 0
