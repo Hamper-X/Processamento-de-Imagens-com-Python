@@ -1,5 +1,6 @@
 # Processamento-de-Imagens-com-Python
-Reconhecimento de padrões por textura em imagens mamográficas
+Trabalho em conjunto com o grupo da materia de Processamento de Imagens Digitais.
+O programa desenvolvido tem como objetivo o reconhecimento de padrões por textura em imagens mamográficas, podendo prever por meio de deep learning a existência de cancêr de mama por meio da análise da imagem de raio-x.
 
 ## Como usar ?
 
