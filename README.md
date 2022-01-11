@@ -1,6 +1,6 @@
 # Processamento de Imagens com Python
 
-PROJETO CONCLUIDO.
+PROJETO CONCLUÍDO.
 
 ## Sobre:
 Trabalho em conjunto com o grupo da materia de Processamento de Imagens Digitais.
